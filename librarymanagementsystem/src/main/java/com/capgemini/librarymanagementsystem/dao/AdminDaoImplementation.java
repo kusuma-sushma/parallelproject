@@ -18,27 +18,36 @@ import com.capgemini.librarymanagementsystem.factory.LibraryManagementSystemFact
 public class AdminDaoImplementation implements AdminDao {
 	
 	Date date=new Date();
-    SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
-    Calendar calendar = Calendar.getInstance();
-	String todayDate = dateFormat.format(calendar.getTime());
-	Date actualReturnDate = calendar.getTime();
-	String returnDate = dateFormat.format(actualReturnDate);
+	Date expectedReturnDate;
+	Date returnedDate;
+//    SimpleDateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");
+//    Calendar calendar = Calendar.getInstance();
+//	String todayDate = dateFormat.format(calendar.getTime());
+//	Date actualReturnDate = calendar.getTime();
+//	String returnDate = dateFormat.format(actualReturnDate);
 	@Override
-	public AdminInformation adminLogin(String email, String password) throws LibraryManagementSystemException {
+	public AdminInformation adminLogin(String email, String password) { // throws LibraryManagementSystemException {
 		AdminInformation adminInfo = LibraryManagementSystemFactory.getAdminInfo();
-		if (adminInfo.getEmail().equals(email) && adminInfo.getPassword().equals(password)) {
+		if (adminInfo.getEmail().equals(email)) {
+			if (adminInfo.getPassword().equals(password)) {
 			return adminInfo;
+		} else {
+			System.err.println("password which is entered is invalid");
 		}
-		throw new LibraryManagementSystemException("Invalid Admin details");
+		} else {
+			System.err.println("emailId which is entered is invalid");
+		}
+	//	throw new LibraryManagementSystemException("Email or password which is mentioned is invalid. Please enter valid credentials");
+		return null;
 	}
 
 	@Override
-	public boolean addUser(UserInformation userInfo) {
+	public boolean addUser(UserInformation userInfo) throws LibraryManagementSystemException {
 		for (UserInformation userBean : LibraryManagementSystemDataBase.user) {
 			if (userBean.getUserId() == userInfo.getUserId()) {
 				return false;
 			} else if (userBean.getEmail().equals(userInfo.getEmail())) {
-				return false;
+			throw new LibraryManagementSystemException("User details already exists, unable to add the user");
 			}
 		}
 
@@ -71,18 +80,24 @@ public class AdminDaoImplementation implements AdminDao {
 	}
 	
 	@Override
-	public boolean issueBook(UserInformation userInfo, BooksInformation bookInfo) throws LibraryManagementSystemException {
+	public boolean issueBook(int userId, int bookId) throws LibraryManagementSystemException {
+		UserInformation userInfo = LibraryManagementSystemFactory.getUserInfo();
+		BooksInformation  bookInfo = LibraryManagementSystemFactory.getBookInfo();
 		boolean isValid = false;
 		UserRequestInformation userRequestInfo = LibraryManagementSystemFactory.userRequest();
+		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DATE, 15);
-		actualReturnDate = calendar.getTime();
+		expectedReturnDate = calendar.getTime();
 
 		int noOfBooksBorrowed = userInfo.getNoOfBooksBorrowed();
 		for (UserRequestInformation info : LibraryManagementSystemDataBase.requests) {
-			if (info.getUserInfo().getUserId() == userInfo.getUserId()) {
-				if (info.getBookInfo().getBookId() == bookInfo.getBookId()) {
+			if (info.getUserId() == userId) {
+				if (info.getBookId() == bookId) {
+					if (info.isBookIssued() == false) {
 					userRequestInfo = info;
+					info.setBookIssued(true);
 					isValid = true;
+				}
 				}
 			}
 		}
@@ -90,6 +105,7 @@ public class AdminDaoImplementation implements AdminDao {
 		if (isValid) {
 			for (BooksInformation info2 : LibraryManagementSystemDataBase.book) {
 				if (info2.getBookId() == bookInfo.getBookId()) {
+					info2.setBookAvailable(false);
 					bookInfo = info2;
 				}
 			}
@@ -100,28 +116,30 @@ public class AdminDaoImplementation implements AdminDao {
 				}
 			}
 			if (noOfBooksBorrowed < 3) {
-				boolean isRemoved = LibraryManagementSystemDataBase.book.remove(bookInfo);
-				if (isRemoved) {
+//				boolean isRemoved = LibraryManagementSystemDataBase.book.remove(bookInfo);
+//				if (isRemoved) {
 					noOfBooksBorrowed++;
 					System.out.println(noOfBooksBorrowed);
 					userInfo.setNoOfBooksBorrowed(noOfBooksBorrowed);
 					userRequestInfo.setDateOfIssued(date);
-					userRequestInfo.setDateOfReturn(actualReturnDate);
-					userRequestInfo.setBookIssued(true);
+					userRequestInfo.setActualReturnDate(expectedReturnDate);
+//					userRequestInfo.setDateOfReturn(actualReturnDate);
+//					userRequestInfo.setBookIssued(true);
 					return true;
 				} else {
-					throw new LibraryManagementSystemException("Book can not be borrowed by  the user");
+					LibraryManagementSystemDataBase.requests.remove(userRequestInfo);
+					throw new LibraryManagementSystemException("Book can not be issued to the user");
 				}
 
 			} else {
 				throw new LibraryManagementSystemException("User has already borrowed 3 books");
 			}
 
-		} else {
-			throw new LibraryManagementSystemException(
-					"User Information or Book Information is not valid hence book can not be borrowed");
-
-		}
+//		} else {
+//			throw new LibraryManagementSystemException(
+//					"User Information or Book Information is not valid hence book can not be borrowed");
+//
+//		}
 
 	}
 
@@ -168,18 +186,7 @@ public class AdminDaoImplementation implements AdminDao {
 	@Override
 	public List<UserInformation> showAllUsers() {
 		List<UserInformation> userInfo = new ArrayList<UserInformation>();
-
-		for (UserInformation userInfo1 : LibraryManagementSystemDataBase.user) {
-			
-//			System.out.println(String.format("%-5s %-10s %-15s %-10s %s", "USERID", "USERNAME", "USEREMAIL", "DEPARTMENT", "BOOKSBORROWED"));
-////
-//			for (UserInformation user : LibraryManagementSystemDataBase.user) {
-//				System.out.println(String.format("%-5s %-10s %-15s %-10s %s", user.getUserId(), user.getUsername(),
-//						user.getEmail(), user.getDepartment(), user.getNoOfBooksBorrowed()));
-//				
-//			}
-//			return null;
-
+		for (UserInformation userInfo1: LibraryManagementSystemDataBase.user) {
 			userInfo1.getUserId();
 			userInfo1.getUsername();
 			userInfo1.getEmail();
@@ -187,14 +194,14 @@ public class AdminDaoImplementation implements AdminDao {
 			userInfo.add(userInfo1);
 		}
 		return userInfo;
-	}
+		}
 
 	@Override
 	public List<UserRequestInformation> showAllRequests() {
 		List<UserRequestInformation> userRequestInfo = new LinkedList<UserRequestInformation>();
 		for (UserRequestInformation requestInfo : LibraryManagementSystemDataBase.requests) {
-			requestInfo.getBookInfo();
-			requestInfo.getUserInfo();
+			requestInfo.getBookId();
+			requestInfo.getUserId();
 			requestInfo.isBookIssued();
 			requestInfo.isBookReturned();
 			userRequestInfo.add(requestInfo);
@@ -203,35 +210,43 @@ public class AdminDaoImplementation implements AdminDao {
 	}
 
 	@Override
-	public boolean isBookRecevied(UserInformation userInfo, BooksInformation bookInfo) throws LibraryManagementSystemException {
+	public boolean isBookRecevied(int userId, int bookId) throws LibraryManagementSystemException {
+//		Calendar calendar1 = Calendar.getInstance();
+//		calendar1.add(Calendar.DATE, 20);
+//		actualReturnedDate = calendar1.getTime();
 		boolean isRecieved = false;
+		double fine;
 		
-		UserRequestInformation userRequestInfo = LibraryManagementSystemFactory.userRequest();
-		Date expectedReturnDate =userRequestInfo.getDateOfIssued();
-		Date returnedDate= userRequestInfo.getDateOfReturn();
+//		UserRequestInformation userRequestInfo = LibraryManagementSystemFactory.userRequest();
+//		Date expectedReturnDate =userRequestInfo.getDateOfIssued();
+//		Date returnedDate= userRequestInfo.getDateOfReturn();
 
+		UserRequestInformation userRequestInfo = LibraryManagementSystemFactory.userRequest();
 		for (UserRequestInformation requestInfo : LibraryManagementSystemDataBase.requests) {
 
-			if (requestInfo.getBookInfo().getBookId() == bookInfo.getBookId()
-					&& requestInfo.getUserInfo().getUserId() == userInfo.getUserId()
+			if (requestInfo.getBookId() == bookId
+					&& requestInfo.getUserId() == userId
 					&& requestInfo.isBookReturned() == true) {
 				isRecieved = true;
-				//expectedReturnDate = requestInfo.getDateOfReturn();
-				//returnedDate=requestInfo.getDateOfReturn();
+				expectedReturnDate = requestInfo.getActualReturnDate();
+				returnedDate=requestInfo.getDateOfReturn();
 				userRequestInfo = requestInfo;
 			}
 		}
-		if (isRecieved)
-			try {
-				{
+		if (isRecieved) {
+//			try {
+//				{
+					
 					long expectDate=expectedReturnDate.getTime();
 					long returnDate = returnedDate.getTime();
 					long diff=returnDate-expectDate;
 					int NoOfDays=(int)(diff/(24*60*60*1000));
 					for (BooksInformation bookInfo1 :LibraryManagementSystemDataBase.book) {
-						if (bookInfo1.getBookId() == bookInfo.getBookId()) {
+						if (bookInfo1.getBookId() == bookInfo1.getBookId()) {
+							bookInfo1.setBookAvailable(true);
 //					//book = info2;
-							LibraryManagementSystemDataBase.book.add(bookInfo1);
+//							LibraryManagementSystemDataBase.book.add(bookInfo1);
+							
 						}
 					}
 //				}
@@ -240,56 +255,62 @@ public class AdminDaoImplementation implements AdminDao {
 
 //			
 					
-//			for (UserInformation userInfo1:LibraryManagementSystemDataBase.users) {
-//				if (userInfo1.getUserId()==userInfo.getUserId()) {
-//				int	noOfBooks = userInfo1.getNoOfBooksBorrowed();
-//				noOfBooks--;
-//				userInfo1.setNoOfBooksBorrowed(noOfBooks);
-//				
-//				}
-//			}
+			for (UserInformation userInfo1:LibraryManagementSystemDataBase.user) {
+				if (userInfo1.getUserId()==userInfo1.getUserId()) {
+				int	noOfBooks = userInfo1.getNoOfBooksBorrowed();
+				noOfBooks--;
+				userInfo1.setNoOfBooksBorrowed(noOfBooks);
+				fine = userInfo1.getFine();
+				if (NoOfDays > 0) {
+					fine = fine + (NoOfDays * 1.8);
+					userInfo1.setFine(fine);
+				}
+				break;
+				}
+			}
 //			calendar.add(Calendar.DATE, 15);
 //			actualReturnDate = calendar.getTime();
 
-					bookInfo.setBookId(userRequestInfo.getBookInfo().getBookId());
-					bookInfo.setBookName(userRequestInfo.getBookInfo().getBookName());
-					bookInfo.setBookAuthor(userRequestInfo.getBookInfo().getBookAuthor());
-					bookInfo.setBookCategory(userRequestInfo.getBookInfo().getBookCategory());
-					bookInfo.setBookPublisher(userRequestInfo.getBookInfo().getBookPublisher());
-					LibraryManagementSystemDataBase.book.add(bookInfo);
+//					bookInfo.setBookId(userRequestInfo.getBookId());
+//					bookInfo.setBookName(userRequestInfo.getBookInfo().getBookName());
+//					bookInfo.setBookAuthor(userRequestInfo.getBookInfo().getBookAuthor());
+//					bookInfo.setBookCategory(userRequestInfo.getBookInfo().getBookCategory());
+//					bookInfo.setBookPublisher(userRequestInfo.getBookInfo().getBookPublisher());
+//					LibraryManagementSystemDataBase.book.add(bookInfo);
 					LibraryManagementSystemDataBase.requests.remove(userRequestInfo);
+					return true;
 				//	bookInfo=bookInfo1;
 //			bookInfo.setBookName(userRequestInfo.getBookInfo().getBookName());
 //			LibraryManagementSystemDataBase.book.add(bookInfo);
 //			LibraryManagementSystemDataBase.requests.remove(userRequestInfo);
 
-					for (UserInformation userInfo2 : LibraryManagementSystemDataBase.user) {
-						if (userInfo2.getUserId() == userInfo.getUserId()) {
-							userInfo = userInfo2;
-					int noOfBooksBorrowed = userInfo.getNoOfBooksBorrowed();
-					noOfBooksBorrowed--;
-					userInfo.setNoOfBooksBorrowed(noOfBooksBorrowed);
-					Double fine=userInfo.getFine();
-					if(NoOfDays>0) {
-						fine=fine+(NoOfDays*1.8);
-						userRequestInfo.setBookReturned(true);
-					}
-					userInfo.setFine(fine);
-					break;
-				
-}
+//					for (UserInformation userInfo2 : LibraryManagementSystemDataBase.user) {
+//						if (userInfo2.getUserId() == userInfo.getUserId()) {
+//							userInfo = userInfo2;
+//					int noOfBooksBorrowed = userInfo.getNoOfBooksBorrowed();
+//					noOfBooksBorrowed--;
+//					userInfo.setNoOfBooksBorrowed(noOfBooksBorrowed);
+//					Double fine=userInfo.getFine();
+//					if(NoOfDays>0) {
+//						fine=fine+(NoOfDays*1.8);
+//						userRequestInfo.setBookReturned(true);
+//					}
+//					userInfo.setFine(fine);
+//					break;
+//				
+//}
 //LibraryManagementSystemDataBase.requests.remove(userRequestInfo);
-					return true;
+//					return true;
 
 				}
 					throw new LibraryManagementSystemException("Book is not able to receive by admin");
 }
-			} catch (LibraryManagementSystemException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		return false;
-}
+//			} catch (LibraryManagementSystemException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		return false;
+//}
 
 	
 //	private static long differenceDate(Date issuedDate, Date returnDate) {

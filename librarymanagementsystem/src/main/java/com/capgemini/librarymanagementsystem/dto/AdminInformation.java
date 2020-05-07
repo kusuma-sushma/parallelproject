@@ -9,6 +9,18 @@ public class AdminInformation implements Serializable {
 	private String password = "sushma";
 	private String email = "sushma@gmail.com";
 
+	public AdminInformation() {
+		
+	}
+	
+	public AdminInformation(int id, String username, String password, String email) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.password = password;
+		this.email = email;
+	}
+
 	public int getId() {
 		return id;
 	}

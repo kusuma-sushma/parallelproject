@@ -8,7 +8,7 @@ import com.capgemini.librarymanagementsystem.exception.LibraryManagementSystemEx
 public interface UserService {
 	
 	UserInformation userLogin(String email, String password) throws LibraryManagementSystemException;
-	UserRequestInformation borrowBook(UserInformation userInfo, BooksInformation bookInfo) throws LibraryManagementSystemException;
-	UserRequestInformation returnBook(UserInformation userInfo, BooksInformation bookInfo) throws LibraryManagementSystemException;
+	UserRequestInformation borrowBook(int userId, int bookId) throws LibraryManagementSystemException;
+	UserRequestInformation returnBook(int userId, int bookId) throws LibraryManagementSystemException;
 
 }

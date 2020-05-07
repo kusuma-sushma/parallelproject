@@ -11,6 +11,22 @@ public class UserInformation implements Serializable {
 	private int noOfBooksBorrowed = 0;
 	private double fine;
 
+	public UserInformation() {
+		
+	}
+	
+	public UserInformation(int userId, String username, String password, String email, String department,
+			int noOfBooksBorrowed, double fine) {
+		super();
+		this.userId = userId;
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.department = department;
+		this.noOfBooksBorrowed = noOfBooksBorrowed;
+		this.fine = fine;
+	}
+
 	public double getFine() {
 		return fine;
 	}

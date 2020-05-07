@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
+import com.capgemini.librarymanagementsystem.dto.AdminInformation;
 //import com.capgemini.librarymanagementsystem.dto.AdminInformation;
 import com.capgemini.librarymanagementsystem.dto.BooksInformation;
 import com.capgemini.librarymanagementsystem.dto.UserInformation;
@@ -30,6 +31,7 @@ public class LibraryManagementSystemController {
 		Calendar calendar = Calendar.getInstance();
 		Date date = LibraryManagementSystemFactory.getDate();
 		Date actualReturnDate = LibraryManagementSystemFactory.getDate();
+	//	LibraryManagementSystemDataBase.database();
 		// Scanner scanner;
 		int choice;
 		int controller1;
@@ -68,7 +70,7 @@ public class LibraryManagementSystemController {
 							boolean isValidEmail = validation.validateByEmail(adminEmail);
 							while (!isValidEmail) {
 								try {
-									throw new LibraryManagementSystemException("please enter valid email id");
+									throw new LibraryManagementSystemException("Email Should contain @ and .com, .in, .org at last");
 								} catch (LibraryManagementSystemException lmse) {
 									System.err.println(lmse.getMessage());
 									adminEmail = scanner.next();
@@ -82,7 +84,7 @@ public class LibraryManagementSystemController {
 							boolean isValidPassword = validation.validateByPassword(adminPassword);
 							while (!isValidPassword) {
 								try {
-									throw new LibraryManagementSystemException("please enter valid password");
+									throw new LibraryManagementSystemException("Password should contain atleast 6 Characters");
 								} catch (LibraryManagementSystemException lmse) {
 									System.err.println(lmse.getMessage());
 									adminPassword = scanner.next();
@@ -91,30 +93,10 @@ public class LibraryManagementSystemController {
 									}
 								}
 							}
-						 adminService.adminLogin(adminEmail, adminPassword);
-							// if (adminLogin!=null) {
+							
+						AdminInformation adminLogin= adminService.adminLogin(adminEmail, adminPassword);
+						 if (adminLogin!=null) {
 							System.out.println("Admin Logged in successfully");
-//							} else {
-//								System.out.println("please enter valid user credentials");
-//							}
-//							
-//							} catch(LibraryManagementSystemException lmse) {
-//								System.err.println(lmse.getMessage());
-//								System.out.println("Enter Email");
-//								email = scanner.next();
-//								System.out.println("Enter password");
-//								password = scanner.next();
-//								if(adminService.adminLogin(email, password)!=null) {
-//									System.out.println("Admin Logged in successfully");
-//									break;
-//								}
-//							} catch (Exception e) {
-//									System.err.println("please enter proper credentials");
-//									System.out.println("press 1 to AdminLogin");
-//									System.out.println("press 2 to UserLogin");
-//									System.out.println("********************");
-//									choice = scanner.nextInt();
-//							}
 							do {
 								System.err.println("Welcome to Admin Operations");
 								System.out.println("press 1 to add user");
@@ -127,67 +109,39 @@ public class LibraryManagementSystemController {
 								System.out.println("press 8 to search book");
 								System.out.println("press 9 to update book");
 								System.out.println("press 10 to delete book");
-								System.out.println("press beyond this to exit");
+								System.out.println("press 0 to exit");
 								System.out.println("**************************");
 								controller1 = scanner.nextInt();
 
 								switch (controller1) {
 								case 1:
 									UserInformation userInformation = LibraryManagementSystemFactory.getUserInfo();
-									System.out.println("Enter userId of 6 digits");
-									String userId = scanner.next();
-									boolean isValidId = validation.validateById(userId);
-									while (!isValidId) {
-										try {
-											throw new LibraryManagementSystemException("please enter valid id");
-										} catch (LibraryManagementSystemException lmse) {
-											System.err.println(lmse.getMessage());
-											userId = scanner.next();
-											if (validation.validateById(userId)) {
-												break;
-											}
-										}
+									int userId=(int) (Math.random()*1000000);
+									if(userId <=100000) {
+										userId = userId+100000;
 									}
-									userInformation.setUserId(Integer.parseInt(userId));
-//
-//									System.out.println("Enter First Name");
-//									String userFirstname = scanner.next();
-//									boolean isValidFN = validation.validateByName(userFirstname);
-//									while (!isValidFN) {
+//									System.out.println("Enter userId of 6 digits");
+//									String userId = scanner.next();
+//									boolean isValidId = validation.validateById(userId);
+//									while (!isValidId) {
 //										try {
-//											throw new LibraryManagementSystemException("please enter valid First name");
+//											throw new LibraryManagementSystemException("Id should contain exactly 6 digits and should not start with zero");
 //										} catch (LibraryManagementSystemException lmse) {
 //											System.err.println(lmse.getMessage());
-//											userFirstname = scanner.next();
-//											if (validation.validateByName(userFirstname)) {
+//											userId = scanner.next();
+//											if (validation.validateById(userId)) {
 //												break;
 //											}
 //										}
 //									}
-//									userInformation.setFirstname(userFirstname);
-//
-//									System.out.println("Enter Last Name");
-//									String userLastname = scanner.next();
-//									boolean isValidLN = validation.validateByName(userLastname);
-//									while (!isValidLN) {
-//										try {
-//											throw new LibraryManagementSystemException("please enter valid last name");
-//										} catch (LibraryManagementSystemException lmse) {
-//											System.err.println(lmse.getMessage());
-//											userLastname = scanner.next();
-//											if (validation.validateByName(userLastname)) {
-//												break;
-//											}
-//										}
-//									}
-//									userInformation.setLastname(userLastname);
-//
+									userInformation.setUserId(userId);
+									System.out.println("userId is "+userId);
 									System.out.println("Enter user Name");
 									String username = scanner.next();
 									boolean isValidUN = validation.validateByName(username);
 									while (!isValidUN) {
 										try {
-											throw new LibraryManagementSystemException("please enter valid username");
+											throw new LibraryManagementSystemException("User Name should be alphabets and should contain atleast 3 alphabets");
 										} catch (LibraryManagementSystemException lmse) {
 											System.err.println(lmse.getMessage());
 											username = scanner.next();
@@ -197,31 +151,29 @@ public class LibraryManagementSystemController {
 										}
 									}
 									userInformation.setUsername(username);
-
 									System.out.println("Enter Department");
-									String userDepartment = scanner.next();
+									String userDepartment = scanner.nextLine();
 									boolean isValidDept = validation.validateByName(userDepartment);
 									while (!isValidDept) {
 										try {
-											throw new LibraryManagementSystemException("please enter valid Department");
+											throw new LibraryManagementSystemException("Department should be alphabets and should contain atleast 3 alphabets");
 										} catch (LibraryManagementSystemException lmse) {
 											System.err.println(lmse.getMessage());
-											userDepartment = scanner.next();
+											userDepartment = scanner.nextLine();
 											if (validation.validateByName(userDepartment)) {
 												break;
 											}
 										}
 									}
 									userInformation.setDepartment(userDepartment);
-
 									System.out.println("Enter Email ex:sushma@gmail.com");
 									String userEmail = scanner.next();
 									boolean isVaildEmail = validation.validateByEmail(userEmail);
 									while (!isVaildEmail) {
 										try {
-											throw new LibraryManagementSystemException("please enter valid data");
+											throw new LibraryManagementSystemException("Email Should contain @ and .com, .in, .org at last");
 										} catch (LibraryManagementSystemException lmse) {
-											System.err.println("Enter Email id once again");
+											System.out.println(lmse.getMessage());
 											userEmail = scanner.next();
 											if (validation.validateByEmail(userEmail)) {
 												break;
@@ -229,15 +181,14 @@ public class LibraryManagementSystemController {
 										}
 									}
 									userInformation.setEmail(userEmail);
-
 									System.out.println("Enter Password of 6 digits");
 									String userPassword = scanner.next();
 									boolean isVaildPassword = validation.validateByPassword(userPassword);
 									while (!isVaildPassword) {
 										try {
-											throw new LibraryManagementSystemException("please enter valid data");
+											throw new LibraryManagementSystemException("Password should contain exactly 6 characters");
 										} catch (LibraryManagementSystemException lmse) {
-											System.err.println("Enter valid password once again");
+											System.out.println(lmse.getMessage());
 											userPassword = scanner.next();
 											if (validation.validateByPassword(userPassword)) {
 												break;
@@ -254,35 +205,40 @@ public class LibraryManagementSystemController {
 											System.out.println("User's email or id already exists");
 										}
 									} catch (Exception e) {
-										System.err.println(e.getMessage());
+										System.err.println("please enter valid data");
 									}
 									break;
 								case 2:
 									BooksInformation book = LibraryManagementSystemFactory.getBookInfo();
-									System.out.println("Enter book id");
-									String bookId = scanner.next();
-									boolean isValid = validation.validateById(bookId);
-									while (!isValid) {
-										try {
-											throw new LibraryManagementSystemException("please enter valid id");
-										} catch (LibraryManagementSystemException lmse) {
-											System.err.println(lmse.getMessage());
-											bookId = scanner.next();
-											if (validation.validateById(bookId)) {
-												break;
-											}
-										}
+									int bookId=(int) (Math.random()*1000000);
+									if(bookId <=100000) {
+										bookId = bookId+100000;
 									}
-									book.setBookId(Integer.parseInt(bookId));
+//									System.out.println("Enter book id");
+//									String bookId = scanner.next();
+//									boolean isValid = validation.validateById(bookId);
+//									while (!isValid) {
+//										try {
+//											throw new LibraryManagementSystemException("Id should contain exactly 6 digits and should not start with zero");
+//										} catch (LibraryManagementSystemException lmse) {
+//											System.err.println(lmse.getMessage());
+//											bookId = scanner.next();
+//											if (validation.validateById(bookId)) {
+//												break;
+//											}
+//										}
+//									}
+									book.setBookId(bookId);
+									System.out.println("BookId is "+bookId);
 									System.out.println("Enter book name");
-									String bookName = scanner.next();
+									String bookName = scanner.nextLine();
 									boolean isValidName = validation.validateByName(bookName);
 									while (!isValidName) {
 										try {
-											throw new LibraryManagementSystemException("please enter valid Name");
+											throw new LibraryManagementSystemException("Book Name should be alphabets and should contain atleast 3 alphabets");
 										} catch (LibraryManagementSystemException lmse) {
 											System.err.println(lmse.getMessage());
-											bookName = scanner.next();
+											bookName = scanner.nextLine();
 											if (validation.validateByName(bookName)) {
 												break;
 											}
@@ -290,15 +246,15 @@ public class LibraryManagementSystemController {
 									}
 									book.setBookName(bookName);
 									System.out.println("Enter category name");
-									String categoryName = scanner.next();
+									String categoryName = scanner.nextLine();
 									boolean isValidCategory = validation.validateByName(categoryName);
 									while (!isValidCategory) {
 										try {
 											throw new LibraryManagementSystemException(
-													"please enter valid category name");
+													"Category Name should be alphabets and should contain atleast 3 alphabets");
 										} catch (LibraryManagementSystemException lmse) {
 											System.err.println(lmse.getMessage());
-											categoryName = scanner.next();
+											categoryName = scanner.nextLine();
 											if (validation.validateByName(categoryName)) {
 												break;
 											}
@@ -306,15 +262,15 @@ public class LibraryManagementSystemController {
 									}
 									book.setBookCategory(categoryName);
 									System.out.println("Enter author name");
-									String authorName = scanner.next();
+									String authorName = scanner.nextLine();
 									boolean isValidAuthor = validation.validateByName(authorName);
 									while (!isValidAuthor) {
 										try {
 											throw new LibraryManagementSystemException(
-													"please enter valid author name");
+													"Author Name should be alphabets and should contain atleast 3 alphabets");
 										} catch (LibraryManagementSystemException lmse) {
 											System.err.println(lmse.getMessage());
-											authorName = scanner.next();
+											authorName = scanner.nextLine();
 											if (validation.validateByName(authorName)) {
 												break;
 											}
@@ -322,14 +278,14 @@ public class LibraryManagementSystemController {
 									}
 									book.setBookAuthor(authorName);
 									System.out.println("Enter publishers name");
-									String bookPublisher = scanner.next();
+									String bookPublisher = scanner.nextLine();
 									boolean isValidPublisher = validation.validateByName(bookPublisher);
 									while (!isValidPublisher) {
 										try {
-											throw new LibraryManagementSystemException("please enter valid publisher");
+											throw new LibraryManagementSystemException("Publisher Name should be alphabets and should contain atleast 3 alphabets");
 										} catch (LibraryManagementSystemException lmse) {
 											System.err.println(lmse.getMessage());
-											bookPublisher = scanner.next();
+											bookPublisher = scanner.nextLine();
 											if (validation.validateByName(bookPublisher)) {
 												break;
 											}
@@ -347,13 +303,12 @@ public class LibraryManagementSystemController {
 									try {
 										System.out.println("Showing all the users who has registered with the help of admin");
 										System.out.println("********************");
-										List<UserInformation> listUsers = 
-												adminService.showAllUsers();
+										List<UserInformation> listUsers = adminService.showAllUsers();
 										
-										System.out.println(String.format("%-5s %-10s %-15s %-10s %s", "USERID", "USERNAME", "USEREMAIL", "DEPARTMENT", "BOOKSBORROWED"));
+										System.out.println(String.format("%-5s %-10s %-15s %-15s %-10s %s", "USERID", "USERNAME", "PASSWORD", "USEREMAIL", "DEPARTMENT", "BOOKSBORROWED"));
 
 										for (UserInformation user : listUsers) {
-											System.out.println(String.format("%-5s %-10s %-15s %-10s %s", user.getUserId(), user.getUsername(),
+											System.out.println(String.format("%-5s %-10s %-15s %-15s %-10s %s", user.getUserId(), user.getUsername(), user.getPassword(),
 													user.getEmail(), user.getDepartment(), user.getNoOfBooksBorrowed()));
 										}
 
@@ -378,15 +333,23 @@ public class LibraryManagementSystemController {
 										System.out.println("Showing all the books present in the library");
 										System.out.println("********************");
 										List<BooksInformation> listBooks = adminService.showAllBooks();
-										for (BooksInformation bookInfo3 : listBooks) {
+										
+										System.out.println(String.format("%-5s %-30s %-20s %-20s %-20s %s", "BOOKID", "BOOKNAME", "BOOKCATEGORY", "BOOKAUTHOR", "BOOKPUBLISHER", "BOOKAVALIABLITY"));
 
-											System.out.println("Book id ------> " + bookInfo3.getBookId());
-											System.out.println("Book Name ------> " + bookInfo3.getBookName());
-											System.out.println("Book Authour------> " + bookInfo3.getBookAuthor());
-											System.out.println("Book Category ------> " + bookInfo3.getBookCategory());
-											System.out.println("Book Publisher------>" + bookInfo3.getBookPublisher());
-											System.out.println("********************");
+										for (BooksInformation book1 : listBooks) {
+											System.out.println(String.format("%-5s %-30s %-20s %-20s %-20s %s", book1.getBookId(), book1.getBookName(), book1.getBookCategory(),
+													book1.getBookAuthor(), book1.getBookPublisher(), book1.isBookAvailable()));
 										}
+
+//										for (BooksInformation bookInfo3 : listBooks) {
+//
+//											System.out.println("Book id ------> " + bookInfo3.getBookId());
+//											System.out.println("Book Name ------> " + bookInfo3.getBookName());
+//											System.out.println("Book Authour------> " + bookInfo3.getBookAuthor());
+//											System.out.println("Book Category ------> " + bookInfo3.getBookCategory());
+//											System.out.println("Book Publisher------>" + bookInfo3.getBookPublisher());
+//											System.out.println("********************");
+//										}
 									} catch (Exception e) {
 										System.out.println("No such book present in library");
 									}
@@ -396,16 +359,23 @@ public class LibraryManagementSystemController {
 										System.out.println("Showing all Requests for Book");
 										System.out.println("********************");
 										List<UserRequestInformation> requestInfo1 = adminService.showAllRequests();
-										for (UserRequestInformation info : requestInfo1) {
+										System.out.println(String.format("%-5s %-15s %-20s %-20s %-20s %s", "BOOKID", "UserId", "DATEOFISSUED", "DATEOFRETURN", "ISBOOKISSUED", "ISBOOKRETURNED"));
 
-											System.out.println("Book id ---------- " + info.getBookInfo().getBookId());
-											System.out.println("Book Name -------- " + info.getBookInfo().getBookName());
-											System.out.println("User id----------- " + info.getUserInfo().getUserId());
-											System.out.println("User Name -------- " + info.getUserInfo().getUsername());
-											System.out.println("Book Issued ------" + info.isBookIssued());
-											System.out.println("Book Returned------" + info.isBookReturned());
-											System.out.println("********************");
+										for (UserRequestInformation request : requestInfo1) {
+											System.out.println(String.format("%-5s %-30s %-20s %-20s %-20s %s", request.getBookId(), request.getUserId(), request.getDateOfIssued(),
+													request.getDateOfReturn(), request.isBookIssued(), request.isBookReturned()));
 										}
+										
+//										for (UserRequestInformation info : requestInfo1) {
+//
+//											System.out.println("Book id ---------- " + info.getBookInfo().getBookId());
+//											System.out.println("Book Name -------- " + info.getBookInfo().getBookName());
+//											System.out.println("User id----------- " + info.getUserInfo().getUserId());
+//											System.out.println("User Name -------- " + info.getUserInfo().getUsername());
+//											System.out.println("Book Issued ------" + info.isBookIssued());
+//											System.out.println("Book Returned------" + info.isBookReturned());
+//											System.out.println("********************");
+//										}
 									} catch (Exception e) {
 										System.out.println("no books present in library");
 										e.printStackTrace();
@@ -421,7 +391,7 @@ public class LibraryManagementSystemController {
 										while (!isIssue) {
 											try {
 												throw new LibraryManagementSystemException(
-														"please enter valid Book id");
+														"Id should contain exactly 6 digits and should not start with zero");
 											} catch (LibraryManagementSystemException lmse) {
 												System.err.println(lmse.getMessage());
 												issueBookId = scanner.next();
@@ -430,14 +400,14 @@ public class LibraryManagementSystemController {
 												}
 											}
 										}
-										bookInfo3.setBookId(Integer.parseInt(issueBookId));
+//										bookInfo3.setBookId(Integer.parseInt(issueBookId));
 										System.out.println("enter User Id  of 6 digits");
 										String issueUserId = scanner.next();
 										boolean isIssueUserId = validation.validateById(issueUserId);
 										while (!isIssueUserId) {
 											try {
 												throw new LibraryManagementSystemException(
-														"please enter valid User id");
+														"Id should contain exactly 6 digits and should not start with zero");
 											} catch (LibraryManagementSystemException lmse) {
 												System.err.println(lmse.getMessage());
 												issueUserId = scanner.next();
@@ -446,8 +416,8 @@ public class LibraryManagementSystemController {
 												}
 											}
 										}
-										userInfo3.setUserId(Integer.parseInt(issueUserId));
-										boolean isBookIssued = adminService.issueBook(userInfo3, bookInfo3);
+//										userInfo3.setUserId(Integer.parseInt(issueUserId));
+										boolean isBookIssued = adminService.issueBook(Integer.parseInt(issueUserId), Integer.parseInt(issueBookId));
 										if (isBookIssued) {
 											calendar.add(Calendar.DATE, 15);
 											date = calendar.getTime();
@@ -455,7 +425,7 @@ public class LibraryManagementSystemController {
 											System.out.println("Book has issued successfully to user");
 											System.out.println("Book needs to be returned by----> " + actualReturnDate);
 										} else {
-											System.out.println("Book cannot be issued to user");
+											System.out.println("Invalid user or book credentials hence, Book cannot be issued to user");
 										}
 
 									} catch (Exception e) {
@@ -473,7 +443,7 @@ public class LibraryManagementSystemController {
 										while (!isUserReturn) {
 											try {
 												throw new LibraryManagementSystemException(
-														"please enter valid User id ");
+														"Id should contain exactly 6 digits and should not start with zero ");
 											} catch (LibraryManagementSystemException lmse) {
 												System.err.println(lmse.getMessage());
 												userReturn = scanner.next();
@@ -482,14 +452,14 @@ public class LibraryManagementSystemController {
 												}
 											}
 										}
-										userInfo.setUserId(Integer.parseInt(userReturn));
+//										userInfo.setUserId(Integer.parseInt(userReturn));
 										System.out.println("Enter Book Id");
 										String returnBook = scanner.next();
 										boolean isBookReturn = validation.validateById(returnBook);
 										while (!isBookReturn) {
 											try {
 												throw new LibraryManagementSystemException(
-														"please enter valid Book id ");
+														"Id should contain exactly 6 digits and should not start with zero");
 											} catch (LibraryManagementSystemException lmse) {
 												System.err.println(lmse.getMessage());
 												userReturn = scanner.next();
@@ -498,13 +468,13 @@ public class LibraryManagementSystemController {
 												}
 											}
 										}
-										bookInfo.setBookId(Integer.parseInt(returnBook));
-										boolean isReceived = adminService.isBookRecevied(userInfo, bookInfo);
+//										bookInfo.setBookId(Integer.parseInt(returnBook));
+										boolean isReceived = adminService.isBookRecevied(Integer.parseInt(userReturn), Integer.parseInt(returnBook));
 										if (isReceived) {
 											System.out.println("Admin received returned book by user");
 											System.out.println("Fine is " + userInfo.getFine());
 										} else {
-											System.out.println("Invalid user or book details  Admin unable to receive");
+											System.out.println("Invalid user or book details. Admin unable to receive");
 										}
 									} catch (Exception e) {
 										System.out.println("Exception due to invalid credentials");
@@ -518,7 +488,7 @@ public class LibraryManagementSystemController {
 									while (!searchByBook) {
 										try {
 											throw new LibraryManagementSystemException(
-													"please enter valid book id for search");
+													"Id should contain exactly 6 digits and should not start with zero");
 										} catch (LibraryManagementSystemException lmse) {
 											System.err.println(lmse.getMessage());
 											searchById = scanner.next();
@@ -538,7 +508,7 @@ public class LibraryManagementSystemController {
 										System.out.println("Book Category----> " + search.getBookCategory());
 										System.out.println("Book Publisher----> " + search.getBookPublisher());
 									} else {
-										System.err.println("No such book found");
+										System.err.println("No book found by the bookid which u r searching for");
 									}
 									break;
 								case 9:
@@ -547,7 +517,7 @@ public class LibraryManagementSystemController {
 									boolean updateBook = validation.validateById(updateById);
 									while (!updateBook) {
 										try {
-											throw new LibraryManagementSystemException("please enter valid book id");
+											throw new LibraryManagementSystemException("Id should contain exactly 6 digits and should not start with zero");
 										} catch (LibraryManagementSystemException lmse) {
 											System.err.println(lmse.getMessage());
 											updateById = scanner.next();
@@ -571,15 +541,15 @@ public class LibraryManagementSystemController {
 
 										case 1:
 											System.out.println("Enter book name");
-											String bookName1 = scanner.next();
+											String bookName1 = scanner.nextLine();
 											boolean isValidName1 = validation.validateByName(bookName1);
 											while (!isValidName1) {
 												try {
 													throw new LibraryManagementSystemException(
-															"please enter valid Name");
+															"Book Name should be alphabets and should contain atleast 3 alphabets");
 												} catch (LibraryManagementSystemException lmse) {
 													System.err.println(lmse.getMessage());
-													bookName = scanner.next();
+													bookName = scanner.nextLine();
 													if (validation.validateByName(bookName1)) {
 														break;
 													}
@@ -589,15 +559,15 @@ public class LibraryManagementSystemController {
 											break;
 										case 2:
 											System.out.println("Enter author name");
-											String authorName1 = scanner.next();
+											String authorName1 = scanner.nextLine();
 											boolean isValidAuthor1 = validation.validateByName(authorName1);
 											while (!isValidAuthor1) {
 												try {
 													throw new LibraryManagementSystemException(
-															"please enter valid author name");
+															"Author Name should be alphabets and should contain atleast 3 alphabets");
 												} catch (LibraryManagementSystemException lmse) {
 													System.err.println(lmse.getMessage());
-													authorName1 = scanner.next();
+													authorName1 = scanner.nextLine();
 													if (validation.validateByName(authorName1)) {
 														break;
 													}
@@ -607,15 +577,15 @@ public class LibraryManagementSystemController {
 											break;
 										case 3:
 											System.out.println("Enter book category name");
-											String categoryName1 = scanner.next();
+											String categoryName1 = scanner.nextLine();
 											boolean isValidCategory1 = validation.validateByName(categoryName1);
 											while (!isValidCategory1) {
 												try {
 													throw new LibraryManagementSystemException(
-															"please enter valid author name");
+															"Category Name should be alphabets and should contain atleast 3 alphabets");
 												} catch (LibraryManagementSystemException lmse) {
 													System.err.println(lmse.getMessage());
-													categoryName1 = scanner.next();
+													categoryName1 = scanner.nextLine();
 													if (validation.validateByName(categoryName1)) {
 														break;
 													}
@@ -626,15 +596,15 @@ public class LibraryManagementSystemController {
 
 										case 4:
 											System.out.println("Enter publishers name");
-											String bookPublisher1 = scanner.next();
+											String bookPublisher1 = scanner.nextLine();
 											boolean isValidPublisher1 = validation.validateByName(bookPublisher1);
 											while (!isValidPublisher1) {
 												try {
 													throw new LibraryManagementSystemException(
-															"please enter valid publisher name");
+															"Publisher Name should be alphabets and should contain atleast 3 alphabets");
 												} catch (LibraryManagementSystemException lmse) {
 													System.err.println(lmse.getMessage());
-													bookPublisher1 = scanner.next();
+													bookPublisher1 = scanner.nextLine();
 													if (validation.validateByName(bookPublisher1)) {
 														break;
 													}
@@ -650,7 +620,7 @@ public class LibraryManagementSystemController {
 										System.err.println("Book is updated successfully");
 										break;
 									} else {
-										System.err.println("book is not in exixting");
+										System.err.println("bookId which was given is not in existing hence unable to update");
 									}
 									break;
 								case 10:
@@ -659,7 +629,7 @@ public class LibraryManagementSystemController {
 									boolean isRemoved = validation.validateById(removeBookById);
 									while (!isRemoved) {
 										try {
-											throw new LibraryManagementSystemException("please enter valid book id");
+											throw new LibraryManagementSystemException("Id should contain exactly 6 digits and should not start with zero");
 										} catch (LibraryManagementSystemException lmse) {
 											System.err.println(lmse.getMessage());
 											removeBookById = scanner.next();
@@ -673,7 +643,7 @@ public class LibraryManagementSystemController {
 									if (bookRemoved) {
 										System.out.println("Book is removed successfully");
 									} else {
-										System.out.println("Invalid book details book cannot be removed");
+										System.out.println("Bookid which was given is not in existing hence book cannot be removed");
 									}
 									break;
 //						default:
@@ -682,8 +652,12 @@ public class LibraryManagementSystemController {
 									// break;
 							} while (controller1 != 0); // do loop
 							// break;
+						 } else {
+							 System.err.println("Admin credentials which was entered is invalid");
+							 controller();
+						 }
 						} catch (InputMismatchException ime) {
-							System.err.println("please enter valid credentials  input mismatch exception");
+							System.err.println("please choose the digits from 0 to 10");
 //							System.out.println("press 1 to AdminLogin");
 //							System.out.println("press 2 to UserLogin");
 //							System.out.println("********************");
@@ -715,7 +689,7 @@ public class LibraryManagementSystemController {
 							boolean isValidUserEmail = validation.validateByEmail(userEmail);
 							while (!isValidUserEmail) {
 								try {
-									throw new LibraryManagementSystemException("please enter valid email id");
+									throw new LibraryManagementSystemException("Email Should contain @ and .com, .in, .org at last");
 								} catch (LibraryManagementSystemException lmse) {
 									System.err.println(lmse.getMessage());
 									userEmail = scanner.next();
@@ -729,7 +703,7 @@ public class LibraryManagementSystemController {
 							boolean isValidUserPassword = validation.validateByPassword(userPassword);
 							while (!isValidUserPassword) {
 								try {
-									throw new LibraryManagementSystemException("please enter valid password");
+									throw new LibraryManagementSystemException("Password should contain exactly 6 characters");
 								} catch (LibraryManagementSystemException lmse) {
 									System.err.println(lmse.getMessage());
 									userPassword = scanner.next();
@@ -738,7 +712,7 @@ public class LibraryManagementSystemController {
 									}
 								}
 							}
-							userService.userLogin(userEmail, userPassword);
+							UserInformation userLogin=userService.userLogin(userEmail, userPassword);
 							System.out.println("User logged in successfully");
 //					} catch (Exception e) {
 //						System.err.println("please enter valid credentials of user");
@@ -749,7 +723,7 @@ public class LibraryManagementSystemController {
 								System.out.println("press 2 to see all the books present in the library");
 								System.out.println("press 3 to request book to admin");
 								System.out.println("press 4 to return the issued book to admin");
-								System.out.println("press beyond this to exit");
+								System.out.println("press 0 to exit");
 								System.out.println("**************************");
 								controller2 = scanner.nextInt();
 								switch (controller2) {
@@ -760,7 +734,7 @@ public class LibraryManagementSystemController {
 									while (!searchByBook) {
 										try {
 											throw new LibraryManagementSystemException(
-													"please enter valid book id for search");
+													"Id should contain exactly 6 digits and should not start with zero");
 										} catch (LibraryManagementSystemException lmse) {
 											System.err.println();
 											lmse.getMessage();
@@ -780,7 +754,7 @@ public class LibraryManagementSystemController {
 										System.out.println("Book Category----> " + search.getBookCategory());
 										System.out.println("Book Publisher----> " + search.getBookPublisher());
 									} else {
-										System.err.println("No such book found");
+										System.err.println("No book found by the bookid which u r searching for");
 									}
 									break;
 								case 2:
@@ -788,15 +762,23 @@ public class LibraryManagementSystemController {
 										System.out.println("Showing all the books present in the library");
 										System.out.println("********************");
 										List<BooksInformation> listBook = adminService.showAllBooks();
-										for (BooksInformation bookInfo3 : listBook) {
+										System.out.println(String.format("%-5s %-30s %-20s %-20s %-20s %s", "BOOKID", "BOOKNAME", "BOOKCATEGORY", "BOOKAUTHOR", "BOOKPUBLISHER", "BOOKAVALIABLITY"));
 
-											System.out.println("Book id ---------- " + bookInfo3.getBookId());
-											System.out.println("Book Name -------- " + bookInfo3.getBookName());
-											System.out.println("Book Authour------ " + bookInfo3.getBookAuthor());
-											System.out.println("Book Category ------- " + bookInfo3.getBookCategory());
-											System.out.println("Book Publisher--------" + bookInfo3.getBookPublisher());
-											System.out.println("********************");
+										for (BooksInformation book1 : listBook) {
+											System.out.println(String.format("%-5s %-30s %-20s %-20s %-20s %s", book1.getBookId(), book1.getBookName(), book1.getBookCategory(),
+													book1.getBookAuthor(), book1.getBookPublisher(), book1.isBookAvailable()));
 										}
+
+										
+//										for (BooksInformation bookInfo3 : listBook) {
+//
+//											System.out.println("Book id ---------- " + bookInfo3.getBookId());
+//											System.out.println("Book Name -------- " + bookInfo3.getBookName());
+//											System.out.println("Book Authour------ " + bookInfo3.getBookAuthor());
+//											System.out.println("Book Category ------- " + bookInfo3.getBookCategory());
+//											System.out.println("Book Publisher--------" + bookInfo3.getBookPublisher());
+//											System.out.println("********************");
+//										}
 //									} catch (LibraryManagementSystemException lmse) {
 //										System.out.println(lmse.getMessage());
 //									}
@@ -807,7 +789,7 @@ public class LibraryManagementSystemController {
 									boolean isValidBookId = validation.validateById(bookId);
 									while (!isValidBookId) {
 										try {
-											throw new LibraryManagementSystemException("please enter valid book id");
+											throw new LibraryManagementSystemException("Id should contain exactly 6 digits and should not start with zero");
 										} catch (LibraryManagementSystemException lmse) {
 											System.err.println(lmse.getMessage());
 											bookId = scanner.next();
@@ -819,7 +801,7 @@ public class LibraryManagementSystemController {
 
 									// System.out.println("Enter Book Name");
 									// String bookName = scanner.next();
-									bookInfo.setBookId(Integer.parseInt(bookId));
+//									bookInfo.setBookId(Integer.parseInt(bookId));
 									// bookBean.setBookTitle(bookName);
 
 									System.out.println("Enter user id of 6 digits");
@@ -827,7 +809,7 @@ public class LibraryManagementSystemController {
 									boolean isValidUserId = validation.validateById(userId);
 									while (!isValidUserId) {
 										try {
-											throw new LibraryManagementSystemException("please enter valid user id");
+											throw new LibraryManagementSystemException("Id should contain exactly 6 digits and should not start with zero");
 										} catch (LibraryManagementSystemException lmse) {
 											System.err.println(lmse.getMessage());
 											userId = scanner.next();
@@ -839,20 +821,18 @@ public class LibraryManagementSystemController {
 
 									// System.out.println("Enter User Name");
 									// String userName = scanner.next();
-									userInfo.setUserId(Integer.parseInt(userId));
+//									userInfo.setUserId(Integer.parseInt(userId));
 									// userBean.setUserName(userName);
 
 									try {
-										UserRequestInformation request = userService.borrowBook(userInfo, bookInfo);
+										UserRequestInformation request = userService.borrowBook(Integer.parseInt(bookId), Integer.parseInt(bookId));
 										System.out.println("Request placed to admin");
-										System.out.println("User Id----->" + request.getUserInfo().getUserId());
-										System.out.println("User name---->" + request.getUserInfo().getUsername());
-										System.out.println("Book Id----->" + request.getBookInfo().getBookId());
-										System.out.println("Book Name----->" + request.getBookInfo().getBookName());
+										System.out.println("User Id----->" + request.getUserId());
+										System.out.println("Book Id----->" + request.getBookId());
 
 									} catch (LibraryManagementSystemException lmse) {
 
-										System.err.println(lmse.getMessage());
+										System.err.println("UserId or BookId is invalid");
 									}
 									break;
 								case 4:
@@ -863,26 +843,26 @@ public class LibraryManagementSystemController {
 									boolean isValidReturnUserId = validation.validateById(returnUser);
 									while (!isValidReturnUserId) {
 										try {
-											throw new LibraryManagementSystemException("please enter valid user id");
+											throw new LibraryManagementSystemException("Id should contain exactly 6 digits and should not start with zero");
 										} catch (LibraryManagementSystemException lmse) {
 											System.err.println();
-											lmse.getMessage();
+//											lmse.getMessage();
 											returnUser = scanner.next();
 											if (validation.validateById(returnUser)) {
 												break;
 											}
 										}
 									}
-									userInfo.setUserId(Integer.parseInt(returnUser));
+//									userInfo.setUserId(Integer.parseInt(returnUser));
 									System.out.println("Enter Book Id");
 									String returnBook = scanner.next();
 									boolean isValidReturnBookId = validation.validateById(returnBook);
 									while (!isValidReturnBookId) {
 										try {
-											throw new LibraryManagementSystemException("please enter valid user id");
+											throw new LibraryManagementSystemException("Id should contain exactly 6 digits and should not start with zero");
 										} catch (LibraryManagementSystemException lmse) {
 											System.err.println();
-											lmse.getMessage();
+//											lmse.getMessage();
 											returnBook = scanner.next();
 											if (validation.validateById(returnBook)) {
 												break;
@@ -890,17 +870,17 @@ public class LibraryManagementSystemController {
 										}
 									}
 
-									bookInfo.setBookId(Integer.parseInt(returnBook));
+//									bookInfo.setBookId(Integer.parseInt(returnBook));
 
 									try {
-										UserRequestInformation requestInfo = userService.returnBook(userInfo, bookInfo);
+										UserRequestInformation requestInfo = userService.returnBook(Integer.parseInt(returnUser), Integer.parseInt(returnBook));
 										System.out.println("Book is Returning to Admin by user");
-										System.out.println("User Id ------>" + requestInfo.getUserInfo().getUserId());
-										System.out.println("Book Id ------>" + requestInfo.getBookInfo().getBookId());
+										System.out.println("User Id ------>" + requestInfo.getUserId());
+										System.out.println("Book Id ------>" + requestInfo.getBookId());
 										System.out.println("Is Returning ------->" + requestInfo.isBookReturned());
 
 									} catch (LibraryManagementSystemException lmse) {
-										System.out.println(lmse.getMessage());
+										System.out.println("UserId or BookId is invalid");
 									}
 									break;
 
@@ -913,7 +893,7 @@ public class LibraryManagementSystemController {
 							} while (controller2 != 0);
 							// break;
 						} catch (InputMismatchException ime) {
-							System.err.println("please enter valid credentials in case of user input mismatch exception");
+							System.err.println("Please choose the digits from 0 to 4");
 							controller();
 //						} catch (NoSuchElementException nsee) {
 //							System.err.println("please enter valid credentials in case of user no such element exception");
@@ -970,7 +950,7 @@ public class LibraryManagementSystemController {
 
 			} catch (InputMismatchException ime) {
 
-				System.err.println("please enter valid credentials input mismatch exception");
+				System.err.println("please choose the digit either 1 or 2");
 				controller();
 //						
 //			System.out.println("press 1 to AdminLogin");
@@ -979,7 +959,7 @@ public class LibraryManagementSystemController {
 //						choice=scanner.nextInt();
 
 			} catch (NoSuchElementException nsee) {
-				System.err.println("please enter valid credentials in case of admin no such element exception");
+				System.err.println("Email or password which is mentioned is invalid. Please enter valid credentials");
 				controller();
 //						System.out.println("press 1 to AdminLogin");
 //						System.out.println("press 2 to UserLogin");
@@ -987,11 +967,11 @@ public class LibraryManagementSystemController {
 //						choice=scanner.nextInt();
 //						break;
 			} catch (NumberFormatException nfe) {
-				System.err.println("please enter valid credentials in case of admin number format exception");
+				System.err.println("Email or password which is mentioned is invalid. Please enter valid credentials");
 				controller();
 			} catch (Exception e) {
 				// break;
-				System.err.println("please enter valid credentials");
+				System.err.println("Email or password which is mentioned is invalid. Please enter valid credentials");
 				controller();
 			}
 			// break;

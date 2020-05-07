@@ -18,13 +18,13 @@ public class UserServiceImplementation implements UserService {
 	}
 
 	@Override
-	public UserRequestInformation borrowBook(UserInformation userInfo, BooksInformation bookInfo) throws LibraryManagementSystemException {
-		return userDao.borrowBook(userInfo, bookInfo);
+	public UserRequestInformation borrowBook(int userId, int bookId) throws LibraryManagementSystemException {
+		return userDao.borrowBook(userId, bookId);
 	}
 
 	@Override
-	public UserRequestInformation returnBook(UserInformation userInfo, BooksInformation bookInfo) throws LibraryManagementSystemException {
-		return userDao.returnBook(userInfo, bookInfo);
+	public UserRequestInformation returnBook(int userId, int bookId) throws LibraryManagementSystemException {
+		return userDao.returnBook(userId, bookId);
 	}
 
 

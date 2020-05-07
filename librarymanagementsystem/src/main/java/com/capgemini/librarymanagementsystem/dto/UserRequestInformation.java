@@ -5,30 +5,43 @@ import java.util.Date;
 
 @SuppressWarnings("serial")
 public class UserRequestInformation implements Serializable {
-
-	private BooksInformation bookInfo;
-	private UserInformation userInfo;
+	
+	private int bookId;
+	private int userId;
 	private Date dateOfIssued;
 	private Date dateOfReturn;
+	private Date actualReturnDate;
 	private boolean bookIssued;
 	private boolean bookReturned;
 
-	public BooksInformation getBookInfo() {
-		return bookInfo;
+	public UserRequestInformation() {
+		
+	}
+	public UserRequestInformation(int bookId, int userId, Date dateOfIssued,
+			Date dateOfReturn, Date actualReturnDate, boolean bookIssued, boolean bookReturned) {
+		super();
+		this.bookId = bookId;
+		this.userId = userId;
+		this.dateOfIssued = dateOfIssued;
+		this.dateOfReturn = dateOfReturn;
+		this.actualReturnDate = actualReturnDate;
+		this.bookIssued = bookIssued;
+		this.bookReturned = bookReturned;
 	}
 
-	public UserInformation getUserInfo() {
-		return userInfo;
+	
+	public int getBookId() {
+		return bookId;
 	}
-
-	public void setUserInfo(UserInformation userInfo) {
-		this.userInfo = userInfo;
+	public void setBookId(int bookId) {
+		this.bookId = bookId;
 	}
-
-	public void setBookInfo(BooksInformation bookInfo) {
-		this.bookInfo = bookInfo;
+	public int getUserId() {
+		return userId;
 	}
-
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
 	public Date getDateOfIssued() {
 		return dateOfIssued;
 	}
@@ -45,6 +58,12 @@ public class UserRequestInformation implements Serializable {
 		this.dateOfReturn = dateOfReturn;
 	}
 
+	public Date getActualReturnDate() {
+		return actualReturnDate;
+	}
+	public void setActualReturnDate(Date actualReturnDate) {
+		this.actualReturnDate = actualReturnDate;
+	}
 	public boolean isBookIssued() {
 		return bookIssued;
 	}

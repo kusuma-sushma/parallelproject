@@ -15,7 +15,7 @@ public class AdminServiceImplementation implements AdminService {
 	private AdminDao adminDao = LibraryManagementSystemFactory.getAdminDao();
 
 	@Override
-	public boolean addUser(UserInformation userInfo) {
+	public boolean addUser(UserInformation userInfo) throws LibraryManagementSystemException {
 		return adminDao.addUser(userInfo);
 	}
 
@@ -35,8 +35,8 @@ public class AdminServiceImplementation implements AdminService {
 	}
 
 	@Override
-	public boolean issueBook(UserInformation userInfo, BooksInformation bookInfo) throws LibraryManagementSystemException {
-		return adminDao.issueBook(userInfo, bookInfo);
+	public boolean issueBook(int userId, int bookId) throws LibraryManagementSystemException {
+		return adminDao.issueBook(userId, bookId);
 	}
 
 	@Override
@@ -65,8 +65,8 @@ public class AdminServiceImplementation implements AdminService {
 	}
 
 	@Override
-	public boolean isBookRecevied(UserInformation userInfo, BooksInformation bookInfo) throws LibraryManagementSystemException {
-		return adminDao.isBookRecevied(userInfo, bookInfo);
+	public boolean isBookRecevied(int userId, int bookId) throws LibraryManagementSystemException {
+		return adminDao.isBookRecevied(userId, bookId);
 	}
 	
 }

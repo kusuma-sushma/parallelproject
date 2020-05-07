@@ -11,8 +11,24 @@ public class BooksInformation implements Serializable {
 	private String bookCategory;
 	private String bookAuthor;
 	private String bookPublisher;
+	private boolean bookAvailable=true;
 	private Date bookIssueDate;
 	private Date bookReturnDate;
+
+	public BooksInformation() {
+		
+	}
+	
+	public BooksInformation(int bookId, String bookName, String bookCategory, String bookAuthor, String bookPublisher,
+			boolean bookAvailable) {
+		super();
+		this.bookId = bookId;
+		this.bookName = bookName;
+		this.bookCategory = bookCategory;
+		this.bookAuthor = bookAuthor;
+		this.bookPublisher = bookPublisher;
+		this.bookAvailable = bookAvailable;
+	}
 
 	public Date getIssuedate() {
 		return bookIssueDate;
@@ -56,6 +72,14 @@ public class BooksInformation implements Serializable {
 
 	public String getBookAuthor() {
 		return bookAuthor;
+	}
+
+	public boolean isBookAvailable() {
+		return bookAvailable;
+	}
+
+	public void setBookAvailable(boolean bookAvailable) {
+		this.bookAvailable = bookAvailable;
 	}
 
 	public void setBookAuthor(String bookAuthor) {

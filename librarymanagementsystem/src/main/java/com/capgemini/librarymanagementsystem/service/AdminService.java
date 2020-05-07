@@ -10,7 +10,7 @@ import com.capgemini.librarymanagementsystem.exception.LibraryManagementSystemEx
 
 public interface AdminService {
 
-	boolean addUser(UserInformation userInfo);
+	boolean addUser(UserInformation userInfo) throws LibraryManagementSystemException;
 
 	public AdminInformation adminLogin(String email, String password) throws LibraryManagementSystemException;
 
@@ -19,7 +19,7 @@ public interface AdminService {
 	public boolean removeBook(int bookId) throws LibraryManagementSystemException;
 
 	// boolean returnedBook(int bookId);
-	boolean issueBook(UserInformation userInfo, BooksInformation bookInfo) throws LibraryManagementSystemException;
+	boolean issueBook(int userId, int bookI) throws LibraryManagementSystemException;
 
 	BooksInformation updateBook(int bookId);
 
@@ -31,6 +31,6 @@ public interface AdminService {
 
 	List<UserInformation> showAllUsers();
 
-	boolean isBookRecevied(UserInformation userInfo, BooksInformation bookInfo) throws LibraryManagementSystemException;
+	boolean isBookRecevied(int userId, int bookId) throws LibraryManagementSystemException;
 
 }

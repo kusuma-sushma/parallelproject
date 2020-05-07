@@ -12,65 +12,74 @@ import com.capgemini.librarymanagementsystem.factory.LibraryManagementSystemFact
 
 public class UserDaoImplementation implements UserDao {
 
+	Date date=new Date();
+	Date expectedReturnDate;
+	Date returnedDate;
+	
 	@Override
 	public UserInformation userLogin(String email, String password) throws LibraryManagementSystemException {
 			for(UserInformation info:LibraryManagementSystemDataBase.user) {
-			if(info.getEmail().equals(email) && info.getPassword().equals(password)) {
+			if(info.getEmail().equals(email)) {
+				if (info.getPassword().equals(password)) {
 					return info;
-				}
+				} else {
+					System.err.println("Password which is entered is invalid");
 			}
-			throw new LibraryManagementSystemException("invalid user details");
+			}
+			}
+			throw new LibraryManagementSystemException("Email which is mentioned is invalid. Please enter valid credentials");
 			}
 		
 
 	@Override
-	public UserRequestInformation borrowBook(UserInformation userInfo, BooksInformation bookInfo) throws LibraryManagementSystemException {
-		boolean request = false; 
+	public UserRequestInformation borrowBook(int userId, int bookId) throws LibraryManagementSystemException {
+//		boolean request = false; 
 		boolean requestBook = false;
-//		UserInformation userInfo2=new UserInformation();
-//		BooksInformation bookInfo2=new BooksInformation();
+//		UserInformation userInfo=new UserInformation();
+//		BooksInformation bookInfo=new BooksInformation();
 		UserRequestInformation requestInfo = LibraryManagementSystemFactory.userRequest();
 		for (UserRequestInformation requestInfo2 : LibraryManagementSystemDataBase.requests) {
-			if (bookInfo.getBookId() == requestInfo2.getBookInfo().getBookId()) {
-			//	if (userInfo.getUserId()!=new UserInformation().getUserId()) {
+			if (bookId == requestInfo2.getBookId()) {
+//				if (userId!=new UserInformation().getUserId()) {
 				requestBook = true;
-				//}
-			}
+				}
+//			}
 
 		}
 
 		if (!requestBook) {
 			for(UserInformation user:LibraryManagementSystemDataBase.user) {
-				if (userInfo.getUserId() == user.getUserId()) {
+				if (user.getUserId()==userId) {
 					for (BooksInformation book : LibraryManagementSystemDataBase.book) {
-						if (book.getBookId() == bookInfo.getBookId()) {
-							userInfo = user;
-							bookInfo = book;
-							request = true;
+						if (book.getBookId() == bookId) {
+							if (book.isBookAvailable() == true) {
+								requestInfo.setUserId(userId);
+								requestInfo.setBookId(bookId);
+								requestInfo.setBookIssued(false);
+							requestBook = true;
 						}
 					}
+			}
 				}
 			}
-			if (request == true) {
-				requestInfo.setBookInfo(bookInfo);
-				requestInfo.setUserInfo(userInfo);
-				
+			if (requestBook == true) {
 				LibraryManagementSystemDataBase.requests.add(requestInfo);
 				return requestInfo;
 			}
 		}
+		
 		throw new LibraryManagementSystemException("Invalid user or book credentials book can not be borrowed");
-	}
+		}
 
 	@Override
-	public UserRequestInformation returnBook(UserInformation userInfo, BooksInformation bookInfo) throws LibraryManagementSystemException {
-		Calendar calendar2= Calendar.getInstance();
-		calendar2.add(Calendar.DATE, 20);
-		Date returnedDate = calendar2.getTime();
+	public UserRequestInformation returnBook(int userId, int bookId) throws LibraryManagementSystemException {
+		Calendar calendar= Calendar.getInstance();
+		calendar.add(Calendar.DATE, 20);
+		returnedDate = calendar.getTime();
 		for (UserRequestInformation requestInfo : LibraryManagementSystemDataBase.requests) {
 			
-			  if (requestInfo.getBookInfo().getBookId() == bookInfo.getBookId() &&
-			  requestInfo.getUserInfo().getUserId() == userInfo.getUserId() &&
+			  if (requestInfo.getBookId() == bookId &&
+			  requestInfo.getUserId() == userId &&
 			  requestInfo.isBookIssued() == true) {
 			 
 			//if (requestInfo.isBookIssued() == true) {
@@ -80,8 +89,7 @@ public class UserDaoImplementation implements UserDao {
 				return requestInfo;
 		//	}
 		}
+		}
 		throw new LibraryManagementSystemException("Invalid user or book credentials book can not be returned");
-	}
-		return null;
 }
 }
