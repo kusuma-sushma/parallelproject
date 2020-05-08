@@ -2,6 +2,7 @@ package com.capgemini.librarymanagementsystemjdbc.dto;
 
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class UserInformation implements Serializable {
 	private String username;
 	private String password;
@@ -10,6 +11,7 @@ public class UserInformation implements Serializable {
 	private String department;
 	private int noOfBooks=0;
 	private String role;
+	private double fine;
 	public String getUsername() {
 		return username;
 	}
@@ -51,6 +53,12 @@ public class UserInformation implements Serializable {
 	}
 	public void setRole(String role) {
 		this.role = role;
+	}
+	public double getFine() {
+		return fine;
+	}
+	public void setFine(double fine) {
+		this.fine = fine;
 	}
 	
 }

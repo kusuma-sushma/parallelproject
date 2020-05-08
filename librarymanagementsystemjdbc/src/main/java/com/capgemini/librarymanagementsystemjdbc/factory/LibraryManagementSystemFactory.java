@@ -7,7 +7,6 @@ import com.capgemini.librarymanagementsystemjdbc.dao.AdminDao;
 import com.capgemini.librarymanagementsystemjdbc.dao.AdminDaoImplementation;
 import com.capgemini.librarymanagementsystemjdbc.dao.UserDao;
 import com.capgemini.librarymanagementsystemjdbc.dao.UserDaoImplementation;
-import com.capgemini.librarymanagementsystemjdbc.dto.AdminInformation;
 import com.capgemini.librarymanagementsystemjdbc.dto.BooksInformation;
 import com.capgemini.librarymanagementsystemjdbc.dto.UserInformation;
 import com.capgemini.librarymanagementsystemjdbc.service.AdminService;
@@ -36,9 +35,9 @@ public class LibraryManagementSystemFactory {
 		return new AdminServiceImplementation();
 	}
 	
-	public static AdminInformation getAdminInfo() {
-		return new AdminInformation();
-	}
+//	public static AdminInformation getAdminInfo() {
+//		return new AdminInformation();
+//	}
 	
 	public static BooksInformation getBookInfo() {
 		return new BooksInformation();

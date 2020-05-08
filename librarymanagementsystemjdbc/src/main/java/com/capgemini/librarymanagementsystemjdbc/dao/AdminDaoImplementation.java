@@ -1,26 +1,27 @@
 package com.capgemini.librarymanagementsystemjdbc.dao;
 
 import java.io.FileInputStream;
-import java.io.ObjectInputStream.GetField;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Savepoint;
 import java.sql.Statement;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
-import com.capgemini.librarymanagementsystemjdbc.dto.AdminInformation;
+import com.capgemini.librarymanagementsystemjdbc.dto.BookAllotment;
 import com.capgemini.librarymanagementsystemjdbc.dto.BooksInformation;
 import com.capgemini.librarymanagementsystemjdbc.dto.UserInformation;
 import com.capgemini.librarymanagementsystemjdbc.dto.UserRequestInformation;
 import com.capgemini.librarymanagementsystemjdbc.exception.LibraryManagementSystemException;
+import com.capgemini.librarymanagementsystemjdbc.factory.LibraryManagementSystemFactory;
+import com.capgemini.librarymanagementsystemjdbc.utility.JdbcUtility;
 
 public class AdminDaoImplementation implements AdminDao {
 
@@ -28,28 +29,21 @@ public class AdminDaoImplementation implements AdminDao {
 	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	Calendar calendar = Calendar.getInstance();
 	String todayDate = dateFormat.format(calendar.getTime());
-	
+	Date actualReturnDate;
+	Date returnDate;
 //	Date actualReturnDate = calendar.getTime();
 //	String returnDate = dateFormat.format(actualReturnDate);
 
 	@Override
-	public AdminInformation adminLogin(String email, String password) {
-
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
-
-			Class.forName(properties.getProperty("path")).newInstance();
-
-			String dburl = properties.getProperty("dburl");
-			try (Connection connection = DriverManager.getConnection(dburl)) {
-				try (PreparedStatement preparedStatement = connection
-						.prepareStatement(properties.getProperty("login1"))) {
+	public UserInformation adminLogin(String email, String password) {
+		
+		try (Connection connection = JdbcUtility.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(QueryMapper.adminLogin)) {
 					preparedStatement.setString(1, email);
 					preparedStatement.setString(2, password);
 					try (ResultSet result = preparedStatement.executeQuery()) {
 						if (result.next()) {
-							AdminInformation adminInfo = new AdminInformation();
+							UserInformation adminInfo = new UserInformation();
 							adminInfo.setEmail(email);
 							adminInfo.setPassword(password);
 					//		adminInfo.setRole(result.getString("role"));
@@ -57,28 +51,17 @@ public class AdminDaoImplementation implements AdminDao {
 						} else {
 							throw new LibraryManagementSystemException("Invalid admin details");
 						}
-					} catch (LibraryManagementSystemException lmse) {
-						System.err.println(lmse.getMessage());
-					}
+				} catch (LibraryManagementSystemException lmse) {
+					System.err.println(lmse.getMessage());
 				}
-			}
-		} catch (Exception e) {
-
-		}
 		return null;
 	}
 
 	@Override
 	public boolean addUser(UserInformation user) {
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
-
-			Class.forName(properties.getProperty("path")).newInstance();
-
-			try (Connection connection = DriverManager.getConnection(properties.getProperty("dburl"))) {
-				try (PreparedStatement preparedStatement = connection
-						.prepareStatement(properties.getProperty("adduser"))) {
+		
+		try (Connection connection = JdbcUtility.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(QueryMapper.addUser)) {
 					preparedStatement.setInt(1, user.getUserId());
 					preparedStatement.setString(2, user.getUsername());
 					preparedStatement.setString(3, user.getEmail());
@@ -89,11 +72,8 @@ public class AdminDaoImplementation implements AdminDao {
 					if (count != 0) {
 						return true;
 					}
-				}
-			}
-
 		} catch (Exception e) {
-			System.err.println("User id already exists");
+			System.err.println("Unable to add the User, user already exists");
 		}
 		return false;
 
@@ -101,14 +81,8 @@ public class AdminDaoImplementation implements AdminDao {
 
 	@Override
 	public boolean addBook(BooksInformation info) {
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
-			Class.forName(properties.getProperty("path")).newInstance();
-
-			try (Connection connection = DriverManager.getConnection(properties.getProperty("dburl"))) {
-				try (PreparedStatement preparedStatement = connection
-						.prepareStatement(properties.getProperty("addbook"))) {
+		try (Connection connection = JdbcUtility.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(QueryMapper.addBook)) {
 					preparedStatement.setInt(1, info.getBookId());
 					preparedStatement.setString(2, info.getBookName());
 					preparedStatement.setString(3, info.getBookCategory());
@@ -118,11 +92,9 @@ public class AdminDaoImplementation implements AdminDao {
 					if (count != 0) {
 						return true;
 					}
-				}
-			}
 
 		} catch (Exception e) {
-			System.err.println("Book already exists");
+			System.err.println("Unable to add the Book, book already exists");
 		}
 		return false;
 
@@ -130,69 +102,62 @@ public class AdminDaoImplementation implements AdminDao {
 
 	@Override
 	public boolean removeBook(int bookid) {
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
-
-			Class.forName(properties.getProperty("path")).newInstance();
-
-			try (Connection connection = DriverManager.getConnection(properties.getProperty("dburl"))) {
-				try (PreparedStatement preparedStatement = connection
-						.prepareStatement(properties.getProperty("removebook"))) {
-					preparedStatement.setInt(1, bookid);
+		try (Connection connection = JdbcUtility.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(QueryMapper.removeBook)) {
+							preparedStatement.setInt(1, bookid);
 					int count = preparedStatement.executeUpdate();
 					if (count != 0) {
 						return true;
 					}
-				}
-			}
-
 		} catch (Exception e) {
-			System.err.println("Book already removed");
+			System.err.println("Unable to delete the Book, book is already removed");
 		}
 		return false;
 
 	}
 
 	@Override
-	public boolean issueBook(UserInformation userInfo, BooksInformation bookInfo) {
+	public boolean issueBook(int userId, int bookId) {
+		UserInformation userInfo = LibraryManagementSystemFactory.getUserInfo();
+		BooksInformation bookInfo = LibraryManagementSystemFactory.getBookInfo();
 		UserRequestInformation userRequestInfo = new UserRequestInformation();
+		BookAllotment bookAllot = new BookAllotment();
 		int noOfBooksBorrowed = userInfo.getNoOfBooks();
 
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
-
-			Class.forName(properties.getProperty("path")).newInstance();
-
-			try (Connection connection = DriverManager.getConnection(properties.getProperty("dburl"))) {
-				try (PreparedStatement preparedStatement = connection
-						.prepareStatement(properties.getProperty("issuebook"))) {
-					try (PreparedStatement preparedStatement1 = connection
-							.prepareStatement(properties.getProperty("updatebook1"))) {
-						try (PreparedStatement preparedStatement2 = connection
-								.prepareStatement(properties.getProperty("removebook"))) {
-							if (userRequestInfo.getUserInfo().getUserId() == userInfo.getUserId()) {
-								if (userRequestInfo.getBookInfo().getBookId() == bookInfo.getBookId()) {
+		try (Connection connection = JdbcUtility.getConnection();
+				PreparedStatement issueBook = connection.prepareStatement(QueryMapper.issueBook);
+				PreparedStatement updateBook = connection.prepareStatement(QueryMapper.updateBook1);
+						PreparedStatement bookAvailable = connection.prepareStatement(QueryMapper.bookAvailable)) { 
+//			try (Connection connection = DriverManager.getConnection(properties.getProperty("dburl"))) {
+//				try (PreparedStatement preparedStatement = connection
+//						.prepareStatement(properties.getProperty("issuebook"))) {
+//					try (PreparedStatement preparedStatement1 = connection
+//							.prepareStatement(properties.getProperty("updatebook1"))) {
+//						try (PreparedStatement preparedStatement2 = connection
+//								.prepareStatement(properties.getProperty("removebook"))) {
+//							if (userRequestInfo.getUserInfo().getUserId() == userInfo.getUserId()) {
+//								if (userRequestInfo.getBookInfo().getBookId() == bookInfo.getBookId()) {
 					if (noOfBooksBorrowed < 3) {
 						Savepoint savepoint = connection.setSavepoint();
-						preparedStatement.setInt(1, bookInfo.getBookId());
-						preparedStatement.setString(2, bookInfo.getBookName());
-						preparedStatement.setInt(3, userInfo.getUserId());
-						preparedStatement.setString(4, userInfo.getUsername());
-						preparedStatement.setString(5, todayDate);
+						issueBook.setInt(1, bookInfo.getBookId());
+						issueBook.setString(2, bookInfo.getBookName());
+						issueBook.setInt(3, userInfo.getUserId());
+						issueBook.setString(4, userInfo.getUsername());
+						issueBook.setString(5, todayDate);
 //						calendar.add(Calendar.DAY_OF_MONTH, 7);
 //						Date date = calendar.getTime();
 //						Date actualReturnDate = calendar.getTime();
 	//					String returnDate = dateFormat.format(actualReturnDate);
-						preparedStatement.setDate(6, bookInfo.getReturnDate());
-						preparedStatement.setDouble(7, bookInfo.getFine());
-						preparedStatement1.setString(1, userRequestInfo.setStatus("approved"));
-						preparedStatement1.setInt(2, bookInfo.getBookId());
-						preparedStatement2.setInt(1, bookInfo.getBookId());
-						int count = preparedStatement.executeUpdate();
-						int count1=preparedStatement1.executeUpdate(); 
-						int count2=preparedStatement2.executeUpdate();
+						issueBook.setDate(6, bookAllot.getReturnDate());
+						issueBook.setDouble(7, userInfo.getFine());
+						int count = issueBook.executeUpdate();
+						updateBook.setString(1, userRequestInfo.setStatus("approved"));
+						updateBook.setInt(2, bookId);
+						int count1=updateBook.executeUpdate();
+						bookAvailable.setBoolean(1, false);
+						bookAvailable.setInt(2, bookId);
+						
+						int count2=bookAvailable.executeUpdate();
 							if (count != 0 && count1 != 0 && count2 != 0) {
 								noOfBooksBorrowed++;
 								userInfo.setNoOfBooks(noOfBooksBorrowed);
@@ -200,22 +165,25 @@ public class AdminDaoImplementation implements AdminDao {
 								return true;
 							} else {
 								connection.rollback(savepoint);
-								throw new LibraryManagementSystemException("Not Updates");
+								throw new LibraryManagementSystemException("Book is not available in library");
 							}
 						} else {
 							throw new LibraryManagementSystemException("Student has already borrowed 3 books");
+//						}  else {
+//							throw new LibraryManagementSystemException("credentials are not matching");
+//						}
+//						}
+//						} else {
+//							throw new LibraryManagementSystemException("credentials are not matching");
+//						}
+//						}
+//					}
+//								}
+//					} 
+//				} catch (LibraryManagementSystemException lmse) {
+//				
+							//System.err.println(lmse.getMessage());
 						}
-						}
-						} else {
-							throw new LibraryManagementSystemException("credentials are not matching");
-						}
-						}
-					}
-								}
-					} 
-				} catch (LibraryManagementSystemException lmse) {
-					//System.err.println(lmse.getMessage());
-
 		} catch (Exception e) {
 			System.err.println("invalid user or book credentials");
 			//e.printStackTrace();
@@ -226,25 +194,28 @@ public class AdminDaoImplementation implements AdminDao {
 
 	
 	
-	private static long differenceDate(Date issuedDate, Date returnDate) {
-		long days = (returnDate.getTime() - issuedDate.getTime()) / 864000000;
-
-		return days;
-	}
+//	private static long differenceDate(Date issuedDate, Date returnDate) {
+//		long days = (returnDate.getTime() - issuedDate.getTime()) / 864000000;
+//
+//		return days;
+//	}
 
 	@Override
-	public boolean updateBook(BooksInformation bookInfo) {
+	public boolean updateBook(int bookId) throws LibraryManagementSystemException {
 		List<BooksInformation> listBook = new LinkedList<BooksInformation>();
-//		BooksInformation bookInfo = new BooksInformation();
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
-
-			Class.forName(properties.getProperty("path")).newInstance();
-
-			try (Connection connection = DriverManager.getConnection(properties.getProperty("dburl"))) {
-				try (PreparedStatement preparedStatement = connection
-						.prepareStatement(properties.getProperty("updatebook"))) {
+		
+		try (Connection connection = JdbcUtility.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(QueryMapper.updateBook)) {
+		BooksInformation bookInfo = new BooksInformation();
+//		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
+//			Properties properties = new Properties();
+//			properties.load(fileInputStream);
+//
+//			Class.forName(properties.getProperty("path")).newInstance();
+//
+//			try (Connection connection = DriverManager.getConnection(properties.getProperty("dburl"))) {
+//				try (PreparedStatement preparedStatement = connection
+//						.prepareStatement(properties.getProperty("updatebook"))) {
 					preparedStatement.setString(1, bookInfo.getBookName());
 					preparedStatement.setString(2, bookInfo.getBookAuthor());
 					preparedStatement.setString(3, bookInfo.getBookCategory());
@@ -254,20 +225,21 @@ public class AdminDaoImplementation implements AdminDao {
 					int count = preparedStatement.executeUpdate();
 					if (count != 0) {
 //						 listBook.add(bookInfo);
-						 System.out.println("sssssssssssss");
+//						 System.out.println("sssssssssssss");
 						return true;
-					} else {
-						throw new LibraryManagementSystemException("invalid user or book lmscredentials");
-					}
-				} catch (LibraryManagementSystemException lmse) {
-					System.err.println(lmse.getMessage());
-				}
-			}
+					} 
+//					else {
+//						throw new LibraryManagementSystemException("Book Id which was is not present in the library");
+//					}
+//				} catch (LibraryManagementSystemException lmse) {
+//					System.err.println(lmse.getMessage());
+//				}
+//			}
 
 		} catch (Exception e) {
 			System.err.println("invalid user or book credentials exception");
 			e.printStackTrace();
-			
+			throw new LibraryManagementSystemException("Book Id which was is not present in the library");
 		}
 		return false;
 
@@ -276,16 +248,9 @@ public class AdminDaoImplementation implements AdminDao {
 	@Override
 	public BooksInformation searchBook(int bookId) {
 		BooksInformation bookInfo = new BooksInformation();
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
-
-			Class.forName(properties.getProperty("path")).newInstance();
-
-			try (Connection connection = DriverManager.getConnection(properties.getProperty("dburl"))) {
-				try (PreparedStatement preparedStatement = connection
-						.prepareStatement(properties.getProperty("searchbook"))) {
-					preparedStatement.setInt(1, bookId);
+		try (Connection connection = JdbcUtility.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(QueryMapper.searchBook)) {
+						preparedStatement.setInt(1, bookId);
 					ResultSet result = preparedStatement.executeQuery();
 					if (result.next()) {
 						bookInfo.setBookId(result.getInt("bookid"));
@@ -295,11 +260,8 @@ public class AdminDaoImplementation implements AdminDao {
 						bookInfo.setBookPublisher(result.getString("bookpublisher"));
 						return bookInfo;
 					} else {
-						System.out.println("No such book found");
-						return null;
+						throw new LibraryManagementSystemException("No such book found for id which is given");
 					}
-				}
-			}
 
 		} catch (Exception e) {
 			System.err.println("invalid user or book credentials");
@@ -310,31 +272,26 @@ public class AdminDaoImplementation implements AdminDao {
 
 	@Override
 	public List<BooksInformation> showAllBooks() {
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
-
-			Class.forName(properties.getProperty("path")).newInstance();
-
-			try (Connection connection = DriverManager.getConnection(properties.getProperty("dburl"))) {
-				try (Statement statement = connection.createStatement()) {
-					try (ResultSet result = statement.executeQuery(properties.getProperty("showallbooks"))) {
-						List<BooksInformation> bookInfo = new LinkedList<BooksInformation>();
-						while (result.next()) {
+		try (Connection connection = JdbcUtility.getConnection();
+				Statement statement = connection.createStatement();
+				ResultSet resultSet = statement.executeQuery(QueryMapper.showAllBooks)) {
+								List<BooksInformation> bookInfo = new ArrayList<BooksInformation>();
+						while (resultSet.next()) {
 							BooksInformation book = new BooksInformation();
-							book.setBookId(result.getInt("bookid"));
-							book.setBookName(result.getString("bookname"));
-							book.setBookAuthor(result.getString("bookauthor"));
-							book.setBookCategory(result.getString("bookcategory"));
-							book.setBookPublisher(result.getString("bookpublisher"));
+							book.setBookId(resultSet.getInt("bookid"));
+							book.setBookName(resultSet.getString("bookname"));
+							book.setBookAuthor(resultSet.getString("bookauthor"));
+							book.setBookCategory(resultSet.getString("bookcategory"));
+							book.setBookPublisher(resultSet.getString("bookpublisher"));
+							book.setBookAvailable(resultSet.getBoolean("bookAvailable"));
 							bookInfo.add(book);
+						if (bookInfo.isEmpty()) {
+							throw new LibraryManagementSystemException("no books are present in the library");
 						}
 						return bookInfo;
 					}
-				}
-			}
 		} catch (Exception e) {
-			System.err.println("invalid user or book credentials");
+			System.err.println("invalid book credentials");
 		}
 		return null;
 
@@ -342,29 +299,23 @@ public class AdminDaoImplementation implements AdminDao {
 
 	@Override
 	public List<UserInformation> showAllUsers() {
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
-
-			Class.forName(properties.getProperty("path")).newInstance();
-
-			try (Connection connection = DriverManager.getConnection(properties.getProperty("dburl"))) {
-				try (Statement statement = connection.createStatement()) {
-					try (ResultSet result = statement.executeQuery(properties.getProperty("showallusers"))) {
-						List<UserInformation> userInfo = new LinkedList<UserInformation>();
-						while (result.next()) {
+		try (Connection connection = JdbcUtility.getConnection();
+				Statement statement = connection.createStatement();
+				ResultSet resultSet = statement.executeQuery(QueryMapper.showAllUsers)) {
+								List<UserInformation> userInfo = new LinkedList<UserInformation>();
+						while (resultSet.next()) {
 							UserInformation user = new UserInformation();
-							user.setUserId(result.getInt("id"));
-							user.setUsername(result.getString("username"));
-							user.setEmail(result.getString("email"));
-							user.setPassword(result.getString("password"));
-							user.setDepartment(result.getString("department"));
-							user.setRole(result.getString("role"));
+							user.setUserId(resultSet.getInt("id"));
+							user.setUsername(resultSet.getString("username"));
+							user.setEmail(resultSet.getString("email"));
+							user.setPassword(resultSet.getString("password"));
+							user.setDepartment(resultSet.getString("department"));
+							user.setRole(resultSet.getString("role"));
 							userInfo.add(user);
+							if (userInfo.isEmpty()) {
+								throw new LibraryManagementSystemException("no users are present in the library");
 						}
 						return userInfo;
-					}
-				}
 			}
 		} catch (Exception e) {
 			System.err.println("invalid user credentials");
@@ -375,30 +326,23 @@ public class AdminDaoImplementation implements AdminDao {
 
 	@Override
 	public List<UserRequestInformation> showAllRequests() {
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
-
-			Class.forName(properties.getProperty("path")).newInstance();
-
-			try (Connection connection = DriverManager.getConnection(properties.getProperty("dburl"))) {
-				try (Statement statement = connection.createStatement()) {
-					try (ResultSet result = statement.executeQuery(properties.getProperty("showallrequest"))) {
-						List<UserRequestInformation> userRequestInfo = new LinkedList<UserRequestInformation>();
-						while (result.next()) {
+		try (Connection connection = JdbcUtility.getConnection();
+				Statement statement = connection.createStatement();
+				ResultSet resultSet = statement.executeQuery(QueryMapper.showAllRequest)) {
+								List<UserRequestInformation> userRequestInfo = new LinkedList<UserRequestInformation>();
+						while (resultSet.next()) {
 							UserRequestInformation userRequest = new UserRequestInformation();
-							userRequest.setBookId(result.getInt("bookid"));
-							userRequest.setBookName(result.getString("bookname"));
-							userRequest.setUserId(result.getInt("userid"));
-							userRequest.setUsername(result.getString("username"));
-							userRequest.setStatus(result.getString("status"));
+							userRequest.setBookId(resultSet.getInt("bookid"));
+							userRequest.setBookName(resultSet.getString("bookname"));
+							userRequest.setUserId(resultSet.getInt("userid"));
+							userRequest.setUsername(resultSet.getString("username"));
+							userRequest.setStatus(resultSet.getString("status"));
 							userRequestInfo.add(userRequest);
+							if (userRequestInfo.isEmpty()) {
+								throw new LibraryManagementSystemException("no users are present in the library");
 						}
 						return userRequestInfo;
 					}
-
-				}
-			}
 		} catch (Exception e) {
 			System.err.println("invalid user or book credentials");
 		}
@@ -407,75 +351,87 @@ public class AdminDaoImplementation implements AdminDao {
 	}
 
 	@Override
-	public boolean isBookRecevied(UserInformation userInfo, BooksInformation bookInfo) {
+	public boolean isBookRecevied(int userId, int bookId) {
 		int noOfDays=0;
 		double fine=0;
-		
+		BookAllotment book = new BookAllotment();
+		UserInformation userInfo = new UserInformation();
 		UserRequestInformation userRequestInfo = new UserRequestInformation();
 		List<BooksInformation> bookList = new LinkedList<BooksInformation>();
-		double finePrice = 0;
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
-
-			Class.forName(properties.getProperty("path")).newInstance();
-
-			try (Connection connection = DriverManager.getConnection(properties.getProperty("dburl"))) {
-				try (PreparedStatement preparedStatement = connection
-						.prepareStatement(properties.getProperty("collectbookfromuser"))) {
-//					try (PreparedStatement preparedStatement1 = connection
-//							.prepareStatement(properties.getProperty("updatebook1"))) {
-						try (PreparedStatement preparedStatement1 = connection
-								.prepareStatement(properties.getProperty("deletebook"))) {
-//							try (PreparedStatement preparedStatement3= connection
-//									.prepareStatement(properties.getProperty("collectbookfromuser"))) {
-					
-					Date issuedDate = bookInfo.getIssuedDate("issuedate");
+		try (Connection connection = JdbcUtility.getConnection();
+				PreparedStatement bookAllotment = connection.prepareStatement(QueryMapper.bookAllot);
+				PreparedStatement userFine = connection.prepareStatement(QueryMapper.userFine);
+				PreparedStatement receive = connection.prepareStatement(QueryMapper.collectBookFromUser);
+				PreparedStatement update = connection.prepareStatement(QueryMapper.updateBook1);
+				PreparedStatement bookAvaiable = connection.prepareStatement(QueryMapper.bookAvailable)) {
+				bookAllotment.setInt(1, bookId);
+				try (ResultSet resultSet = bookAllotment.executeQuery()) {
+					int bookAllotId = resultSet.getInt("bookAllotmentId");
+					Savepoint savepoint = connection.setSavepoint();
+//					Date issuedDate = bookInfo.getIssuedDate("issuedate");
 //					calendar.add(Calendar.DAY_OF_MONTH, 7);
 //					Date date = calendar.getTime();
 //					Date actualReturnDate = calendar.getTime();
 //					String returnDate = dateFormat.format(actualReturnDate);
 			//		preparedStatement.setString(6, returnDate);
 //					Date returnDate = new Date();
-					preparedStatement.setString(1, todayDate);
-					calendar.add(Calendar.DAY_OF_MONTH, 7);
+//					receive.setDate(1, todayDate);
+					if (book.getBookAllotmentId()==bookAllotId) {
+					actualReturnDate = book.getExpectedReturnDate();
+					returnDate = book.getReturnDate();
+					long expectDate = actualReturnDate.getTime();
+					long returnedDate = returnDate.getTime();
+					long diff=expectDate-returnedDate;
+					
+					int NoOfDays=(int)(diff/(24*60*60*1000));
+					if (NoOfDays > 0) {
+						fine = fine + (NoOfDays * 1.8);
+						userFine.setDouble(1, fine);
+						userFine.setInt(2, userId);
+						userFine.executeQuery();
+					}
+//					calendar.add(Calendar.DAY_OF_MONTH, 7);
 	//				Date date = calendar.getTime();
-					Date actualReturnDate = calendar.getTime();
-					String returnDate = dateFormat.format(actualReturnDate);
+//					Date actualReturnDate = calendar.getTime();
+//					String returnDate = dateFormat.format(actualReturnDate);
 
 			//		preparedStatement.setString(6, date);
-					long noOfDays = (issuedDate.-date.getDate());
+//					long noOfDays = (issuedDate,actualReturnDate);
 							//differenceDate(issuedDate, date);
-					System.out.println(noOfDays);
-					int noOfDaysint = (int) noOfDays;
-					System.out.println(noOfDaysint);
-					if (actualReturnDate) {
-						finePrice = 0;
-					} else {
-						finePrice = noOfDays * 1.8;
-					}
-					preparedStatement.setDouble(2, finePrice);
-					preparedStatement.setInt(3, bookInfo.getBookId());
+//					System.out.println(noOfDays);
+//					int noOfDaysint = (int) noOfDays;
+//					System.out.println(noOfDaysint);
+//					if (actualReturnDate) {
+						fine = 0;
+//					} else {
+						fine = noOfDays * 1.8;
+//					}
+						receive.setString(1, todayDate);
+						receive.setDouble(2, fine);
+						receive.setInt(3, bookId);
 					int noOfBooksBorrowed = userInfo.getNoOfBooks();
 					noOfBooksBorrowed--;
 					userInfo.setNoOfBooks(noOfBooksBorrowed);
-					bookList.add(bookInfo);
-					preparedStatement1.setInt(1, bookInfo.getBookId());
-					Savepoint savepoint = connection.setSavepoint();
+//					bookList.add(bookInfo);
+					update.setString(1, "returned");
+					update.setInt(2, bookId);
+					update.executeUpdate(); 
+					bookAvaiable.setBoolean(1, true);
+					bookAvaiable.setInt(2, bookId);
+					bookAvaiable.executeUpdate();
+//					preparedStatement1.setInt(1, bookInfo.getBookId());
+//					Savepoint savepoint = connection.setSavepoint();
 					//preparedStatement1.setInt(2, bookInfo.getBookId());
 					//bookInfo = AdminDaoImplementation.updateBook2(bookInfo.getBookId());
-					int count = preparedStatement.executeUpdate();
-					int count1=preparedStatement1.executeUpdate();
-					if (count != 0&&count1!=0) {
-							return true;
-					}  else {
-						connection.rollback(savepoint);
+//					int count = preparedStatement.executeUpdate();
+//					int count1=preparedStatement1.executeUpdate();
+//					if (count != 0&&count1!=0) {
+//							return true;
+				} else {
+					connection.rollback(savepoint);	
 				}
-			}
-				}
-			}
-
-		} catch (Exception e) {
+		} 
+		}catch (Exception e) {
 			System.err.println("invalid user or book credentials book cannot be returned");
 			e.printStackTrace();
 		}

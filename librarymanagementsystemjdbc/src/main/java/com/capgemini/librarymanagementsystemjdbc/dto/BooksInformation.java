@@ -5,6 +5,7 @@ import java.util.Date;
 //import java.text.SimpleDateFormat;
 
 
+@SuppressWarnings("serial")
 public class BooksInformation implements Serializable {
 	//Date date = new Date();
 	//SimpleDateFormat format=new SimpleDateFormat("dd-MM-yyyy");
@@ -14,9 +15,7 @@ public class BooksInformation implements Serializable {
 	private String bookCategory;
 	private String bookAuthor;
 	private String bookPublisher;
-	private Date issueDate;
-	private Date returnDate;
-	private double fine;
+	private boolean bookAvailable=true;
 	public int getBookId() {
 		return bookId;
 	}
@@ -47,23 +46,29 @@ public class BooksInformation implements Serializable {
 	public void setBookPublisher(String bookPublisher) {
 		this.bookPublisher = bookPublisher;
 	}
-	public Date getIssueDate() {
-		return issueDate;
+//	public Date getIssueDate() {
+//		return issueDate;
+//	}
+//	public void setIssueDate(Date issueDate) {
+//		this.issueDate = issueDate;
+//	}
+//	public java.sql.Date getReturnDate() {
+//		return (java.sql.Date) returnDate;
+//	}
+//	public void setReturnDate(Date returnDate) {
+//		this.returnDate = returnDate;
+//	}
+//	public double getFine() {
+//		return fine;
+//	}
+//	public void setFine(double fine) {
+//		this.fine = fine;
+//	}
+	public boolean isBookAvailable() {
+		return bookAvailable;
 	}
-	public void setIssueDate(Date issueDate) {
-		this.issueDate = issueDate;
+	public void setBookAvailable(boolean bookAvailable) {
+		this.bookAvailable = bookAvailable;
 	}
-	public java.sql.Date getReturnDate() {
-		return (java.sql.Date) returnDate;
-	}
-	public void setReturnDate(Date returnDate) {
-		this.returnDate = returnDate;
-	}
-	public double getFine() {
-		return fine;
-	}
-	public void setFine(double fine) {
-		this.fine = fine;
-	}
-
+	
 }

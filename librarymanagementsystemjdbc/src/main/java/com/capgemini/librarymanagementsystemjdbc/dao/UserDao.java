@@ -11,7 +11,7 @@ public interface UserDao {
 
 	//boolean registration(UserInformation info,int count);
 	UserInformation userLogin(String email, String password);
-	UserRequestInformation borrowBook(UserInformation userInfo, BooksInformation bookInfo);
-	UserRequestInformation returnBook(UserInformation userInfo, BooksInformation bookInfo);
+	UserRequestInformation borrowBook(int userId, int bookId);
+	UserRequestInformation returnBook(int userId, int bookId);
 
 }

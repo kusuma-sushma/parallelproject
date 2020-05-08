@@ -1,6 +1,7 @@
 package com.capgemini.librarymanagementsystemjdbc.exception;
 
-public class LibraryManagementSystemException extends RuntimeException{
+@SuppressWarnings("serial")
+public class LibraryManagementSystemException extends Exception{
 	public LibraryManagementSystemException(String message) {
 		super(message);
 	}

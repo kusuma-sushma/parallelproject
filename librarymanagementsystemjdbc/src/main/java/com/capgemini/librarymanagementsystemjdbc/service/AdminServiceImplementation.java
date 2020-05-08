@@ -3,10 +3,10 @@ package com.capgemini.librarymanagementsystemjdbc.service;
 import java.util.List;
 
 import com.capgemini.librarymanagementsystemjdbc.dao.AdminDao;
-import com.capgemini.librarymanagementsystemjdbc.dto.AdminInformation;
 import com.capgemini.librarymanagementsystemjdbc.dto.BooksInformation;
 import com.capgemini.librarymanagementsystemjdbc.dto.UserInformation;
 import com.capgemini.librarymanagementsystemjdbc.dto.UserRequestInformation;
+import com.capgemini.librarymanagementsystemjdbc.exception.LibraryManagementSystemException;
 import com.capgemini.librarymanagementsystemjdbc.factory.LibraryManagementSystemFactory;
 
 
@@ -21,7 +21,7 @@ public class AdminServiceImplementation implements AdminService{
 	}
 
 	@Override
-	public AdminInformation adminLogin(String email, String password) {
+	public UserInformation adminLogin(String email, String password) {
 		return adminDao.adminLogin(email, password);
 	}
 
@@ -41,13 +41,13 @@ public class AdminServiceImplementation implements AdminService{
 //	}
 
 	@Override
-	public boolean issueBook(UserInformation userInfo, BooksInformation bookInfo) {
-		return adminDao.issueBook(userInfo, bookInfo);
+	public boolean issueBook(int userId, int bookId) {
+		return adminDao.issueBook(userId, bookId);
 	}
 
 	@Override
-	public boolean updateBook(BooksInformation bookInfo) {
-		return adminDao.updateBook(bookInfo);
+	public boolean updateBook(int bookId) throws LibraryManagementSystemException {
+		return adminDao.updateBook(bookId);
 	}
 
 	@Override
@@ -71,8 +71,8 @@ public class AdminServiceImplementation implements AdminService{
 	}
 
 	@Override
-	public boolean isBookRecevied(UserInformation userInfo, BooksInformation bookInfo) {
-		return adminDao.isBookRecevied(userInfo, bookInfo);
+	public boolean isBookRecevied(int userId, int bookId) {
+		return adminDao.isBookRecevied(userId, bookId);
 	}
 
 
