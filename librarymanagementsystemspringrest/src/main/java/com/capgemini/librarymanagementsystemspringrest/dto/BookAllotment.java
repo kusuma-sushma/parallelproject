@@ -18,7 +18,7 @@ public class BookAllotment {
 	@Column
 	@GeneratedValue
 	private int bookAllotedId;
-	@Column
+	@Column(nullable=false)
 	private int bookId;
 	@Column
 	private String bookName;

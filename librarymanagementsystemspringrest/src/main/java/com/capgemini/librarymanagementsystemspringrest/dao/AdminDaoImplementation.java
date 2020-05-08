@@ -128,7 +128,7 @@ public class AdminDaoImplementation implements AdminDao {
 	}
 
 
-	public boolean issueBook(UserInformation userInfo, BooksInformation bookInfo) {
+	public boolean issueBook(int userId, int bookId) {
 	//	EntityManagerFactory factory = null;
 		EntityManager manager = null;
 		EntityTransaction transaction = null;
@@ -146,10 +146,10 @@ public class AdminDaoImplementation implements AdminDao {
 			String jpql = "update UserRequestInformation m set m.status = :mstatus where m.bookid=:bookid";
 			Query query = manager.createQuery(jpql);
 			query.setParameter("mstatus", user.getStatus());
-			query.setParameter("mbookId", bookInfo.getBookId());
-			boolean update=AdminDaoImplementation.updateBook1(bookInfo.getBookId());
+			query.setParameter("mbookId", bookId);
+			boolean update=AdminDaoImplementation.updateBook1(bookId);
 			if (update!=false) {
-			boolean delete =AdminDaoImplementation.deleteBook1(bookInfo.getBookId());
+			boolean delete =AdminDaoImplementation.deleteBook1(bookId);
 			if (delete!=false) {
 				 query.executeUpdate();
 				transaction.commit();
@@ -255,7 +255,7 @@ public class AdminDaoImplementation implements AdminDao {
 
 
 
-	public boolean isBookRecevied(UserInformation userInfo, BooksInformation bookInfo) {
+	public boolean isBookRecevied(int userId, int bookId) {
 	//	EntityManagerFactory factory = null;
 		EntityManager manager = null;
 		EntityTransaction transaction = null;
@@ -273,7 +273,7 @@ public class AdminDaoImplementation implements AdminDao {
 //			query.setParameter("mstatus", "returned");
 //			query.setParameter("mbookId", bookInfo.getBookId());
 			query.executeUpdate();
-			book.add(bookInfo);
+//			book.add(bookInfo);
 			transaction.commit();
 		} catch (Exception e) {
 			e.getMessage();

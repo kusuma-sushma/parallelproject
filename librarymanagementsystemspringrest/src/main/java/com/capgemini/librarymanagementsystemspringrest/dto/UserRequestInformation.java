@@ -24,4 +24,5 @@ public class UserRequestInformation implements Serializable{
 	@Column
 	private String status;
 	
+	
 }

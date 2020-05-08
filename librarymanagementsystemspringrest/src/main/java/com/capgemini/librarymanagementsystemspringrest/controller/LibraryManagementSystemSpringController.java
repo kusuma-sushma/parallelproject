@@ -172,8 +172,8 @@ public class LibraryManagementSystemSpringController {
 	@PostMapping(path="/issueBook",consumes= {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
 			produces= {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 //	@ResponseBody
-	public LibraryManagementSystemResponse issueBook(@RequestBody UserInformation userInfo, BooksInformation bookInfo) {
-		boolean issued = adminService.issueBook(userInfo, bookInfo);
+	public LibraryManagementSystemResponse issueBook(@RequestBody int userId, int bookId) {
+		boolean issued = adminService.issueBook(userId, bookId);
 		LibraryManagementSystemResponse response= new LibraryManagementSystemResponse();
 		if(issued) {
 			response.setMessage("Book Issued to the User Successfully");
@@ -187,8 +187,8 @@ public class LibraryManagementSystemSpringController {
 	@PostMapping(path="/receiveBook",consumes= {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
 			produces= {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 //	@ResponseBody
-	public LibraryManagementSystemResponse receiveBook(@RequestBody UserInformation userInfo, BooksInformation bookInfo) {
-		boolean returned = adminService.isBookRecevied(userInfo, bookInfo);
+	public LibraryManagementSystemResponse receiveBook(@RequestBody int userId, int bookId) {
+		boolean returned = adminService.isBookRecevied(userId, bookId);
 		LibraryManagementSystemResponse response= new LibraryManagementSystemResponse();
 		if(returned) {
 			response.setMessage("Book has been collected by the user Successfully");
@@ -202,8 +202,8 @@ public class LibraryManagementSystemSpringController {
 	@PostMapping(path="/borrowBook",consumes= {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
 			produces= {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 //	@ResponseBody
-	public LibraryManagementSystemResponse borrowBook(@RequestBody UserInformation userInfo, BooksInformation bookInfo) {
-		UserRequestInformation borrow = userService.borrowBook(userInfo, bookInfo);
+	public LibraryManagementSystemResponse borrowBook(@RequestBody int userId, int bookId) {
+		UserRequestInformation borrow = userService.borrowBook(userId, bookId);
 		LibraryManagementSystemResponse response= new LibraryManagementSystemResponse();
 		if(borrow!=null) {
 			response.setMessage("Trying to borrow Book, request has been send to admin ");
@@ -217,8 +217,8 @@ public class LibraryManagementSystemSpringController {
 	@PostMapping(path="/returnBook",consumes= {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
 			produces= {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 //	@ResponseBody
-	public LibraryManagementSystemResponse returnBook(@RequestBody UserInformation userInfo, BooksInformation bookInfo) {
-		UserRequestInformation returning = userService.returnBook(userInfo, bookInfo);
+	public LibraryManagementSystemResponse returnBook(@RequestBody int userId, int bookId) {
+		UserRequestInformation returning = userService.returnBook(userId, bookId);
 		LibraryManagementSystemResponse response= new LibraryManagementSystemResponse();
 		if(returning!=null) {
 			response.setMessage("Trying to return Book, request has been send to admin ");

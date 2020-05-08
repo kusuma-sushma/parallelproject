@@ -48,7 +48,7 @@ public class UserDaoImplementation implements UserDao {
 		return null;
 	}
 
-	public UserRequestInformation borrowBook(UserInformation userInfo, BooksInformation bookInfo) {
+	public UserRequestInformation borrowBook(int userId, int bookId) {
 		EntityManagerFactory factory =null;
 		EntityManager manager = null;
 		EntityTransaction transaction = null;
@@ -71,7 +71,7 @@ public class UserDaoImplementation implements UserDao {
 		return null;
 	}
 
-	public UserRequestInformation returnBook(UserInformation userInfo, BooksInformation bookInfo) {
+	public UserRequestInformation returnBook(int userId, int bookId) {
 		EntityManagerFactory factory = null;
 		EntityManager manager = null;
 		EntityTransaction transaction = null;
@@ -87,9 +87,9 @@ public class UserDaoImplementation implements UserDao {
 			String jpql = properties.getProperty("updatebook1");
 			Query query = manager.createQuery(jpql);
 			query.setParameter("mstatus", "returned");
-			query.setParameter("mbookId", bookInfo.getBookId());
+			query.setParameter("mbookId", bookId);
 			query.executeUpdate();
-			book.add(bookInfo);
+//			book.add(bookInfo);
 			transaction.commit();
 		} catch (Exception e) {
 			e.getMessage();

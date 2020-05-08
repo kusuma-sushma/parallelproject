@@ -27,11 +27,14 @@ public class BooksInformation implements Serializable{
 	private String bookCategory;
 	@Column
 	private String bookPublisher;
-//	@Column
+	@Column
+	private boolean bookAvaliable=true;
+	
 //	private Date issueDate;
 //	@Column
 //	private Date returnDate;
 //	@Column
 //	private double fine;
+//	}
 
 }
