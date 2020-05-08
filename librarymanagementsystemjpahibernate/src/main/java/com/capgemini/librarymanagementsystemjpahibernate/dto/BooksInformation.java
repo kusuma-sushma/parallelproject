@@ -25,7 +25,8 @@ public class BooksInformation implements Serializable{
 	private String bookCategory;
 	@Column
 	private String bookPublisher;
-//	@Column
+	@Column
+	private boolean bookAvailable=true;
 //	private Date issueDate;
 //	@Column
 //	private Date returnDate;

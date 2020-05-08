@@ -27,6 +27,10 @@ public class UserInformation {
 	//private int noOfBooks=0;
 	@Column
 	private String role;
+	@Column
+	private int noOBooksBorrowed=0;
+	@Column
+	private double fine;
 	
 	
 	//public int getNoOfBooks() {

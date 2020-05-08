@@ -4,6 +4,7 @@ import java.sql.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -15,6 +16,13 @@ import lombok.Data;
 public class BookAllotment {
 	@Id
 	@Column
+	@GeneratedValue
+//	int bookId=(int) (Math.random()*1000000);
+//	if(bookId <=100000) {
+//		bookId = bookId+100000;
+//	}
+	private int bookAllotmentId;
+	@Column(nullable=false)
 	private int bookId;
 	@Column
 	private String bookName;

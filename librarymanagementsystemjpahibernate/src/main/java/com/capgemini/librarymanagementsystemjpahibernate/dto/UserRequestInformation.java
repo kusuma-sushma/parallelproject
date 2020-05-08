@@ -1,6 +1,7 @@
 package com.capgemini.librarymanagementsystemjpahibernate.dto;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,11 +18,19 @@ public class UserRequestInformation implements Serializable{
 	private int bookId;
 	@Column
 	private String bookName;
-	@Column
+	@Column(nullable=false)
 	private int userId;
 	@Column
 	private String userName;
 	@Column
 	private String status;
+	@Column
+	private Date dateOfIssued;
+	@Column
+	private Date dateOfReturn;
+	@Column
+	private boolean bookIssued;
+	@Column
+	private boolean bookReturned;
 	
 }

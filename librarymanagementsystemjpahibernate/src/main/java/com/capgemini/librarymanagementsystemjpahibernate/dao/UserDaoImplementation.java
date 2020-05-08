@@ -19,16 +19,27 @@ import com.capgemini.librarymanagementsystemjpahibernate.dto.UserRequestInformat
 
 public class UserDaoImplementation implements UserDao {
 
+	private final static EntityManagerFactory factory = 
+			Persistence.createEntityManagerFactory("hibernatedb");
+
 	public UserInformation userLogin(String email, String password) {
-		EntityManagerFactory factory =null;
+//		EntityManagerFactory factory =null;
 		EntityManager manager = null;
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
-		factory = Persistence.createEntityManagerFactory("hibernatedb");
+//		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
+//			Properties properties = new Properties();
+//			properties.load(fileInputStream);
+//		factory = Persistence.createEntityManagerFactory("hibernatedb");
+		try {
 		manager = factory.createEntityManager();
-		String jpql = properties.getProperty("login2");
+		String jpql = "select m from UserInformation m where m.email = :memail and m.password =:mpassword and m.role!='admin'";
 		Query query = manager.createQuery(jpql);
+//		transaction.begin();
+//		users = manager.find(LibraryUsers.class, id);
+
+//		if (users != null) {
+//			if (users.getPassword().equals(password) && users.getRole().equalsIgnoreCase("admin")) {
+//				transaction.commit();
+
 		query.setParameter("memail",email);
 		query.setParameter("mpassword", password);
 		UserInformation info = (UserInformation) query.getSingleResult();
@@ -43,13 +54,13 @@ public class UserDaoImplementation implements UserDao {
 		return null;
 	}
 
-	public UserRequestInformation borrowBook(UserInformation userInfo, BooksInformation bookInfo) {
-		EntityManagerFactory factory =null;
+	public UserRequestInformation borrowBook(int userId, int bookId) {
+//		EntityManagerFactory factory =null;
 		EntityManager manager = null;
 		EntityTransaction transaction = null;
 		UserRequestInformation userRequest=new UserRequestInformation();
 		try {
-			factory = Persistence.createEntityManagerFactory("hibernatedb");
+//			factory = Persistence.createEntityManagerFactory("hibernatedb");
 			manager = factory.createEntityManager();
 			transaction = manager.getTransaction();
 			transaction.begin();	
@@ -66,25 +77,26 @@ public class UserDaoImplementation implements UserDao {
 		return null;
 	}
 
-	public UserRequestInformation returnBook(UserInformation userInfo, BooksInformation bookInfo) {
-		EntityManagerFactory factory = null;
+	public UserRequestInformation returnBook(int userId, int bookId) {
+//		EntityManagerFactory factory = null;
 		EntityManager manager = null;
 		EntityTransaction transaction = null;
 		UserRequestInformation user = new UserRequestInformation();
 		List<BooksInformation> book = new LinkedList<BooksInformation>();
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
-			factory = Persistence.createEntityManagerFactory("hibernatedb");
+//		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
+//			Properties properties = new Properties();
+//			properties.load(fileInputStream);
+//			factory = Persistence.createEntityManagerFactory("hibernatedb");
+		try {
 			manager = factory.createEntityManager();
 			transaction = manager.getTransaction();
 			transaction.begin();
-			String jpql = properties.getProperty("updatebook1");
+			String jpql = "update UserRequestInformation m set m.status=:mstatus where m.bookid=:mbookid;";
 			Query query = manager.createQuery(jpql);
 			query.setParameter("mstatus", "returned");
-			query.setParameter("mbookId", bookInfo.getBookId());
+			query.setParameter("mbookId", bookId);
 			query.executeUpdate();
-			book.add(bookInfo);
+//			book.add(bookInfo);
 			transaction.commit();
 		} catch (Exception e) {
 			e.getMessage();
