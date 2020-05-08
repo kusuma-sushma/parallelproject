@@ -507,6 +507,7 @@ public class LibraryManagementSystemController {
 										System.out.println("Book Author----> " + search.getBookAuthor());
 										System.out.println("Book Category----> " + search.getBookCategory());
 										System.out.println("Book Publisher----> " + search.getBookPublisher());
+										System.out.println("IS Book Available----> "+ search.isBookAvailable());
 									} else {
 										System.err.println("No book found by the bookid which u r searching for");
 									}
