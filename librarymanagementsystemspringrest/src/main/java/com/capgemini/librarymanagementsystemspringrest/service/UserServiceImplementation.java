@@ -18,12 +18,12 @@ public class UserServiceImplementation implements UserService{
 	}
 
 	@Override
-	public UserRequestInformation borrowBook(int userId, int bookId) {
-		return userDao.borrowBook(userId, bookId);
+	public boolean borrowBook(int id, int bookId) {
+		return userDao.borrowBook(id, bookId);
 	}
 
 	@Override
-	public UserRequestInformation returnBook(int userId, int bookId) {
+	public boolean returnBook(int userId, int bookId) {
 		return userDao.returnBook(userId, bookId);
 	}
 

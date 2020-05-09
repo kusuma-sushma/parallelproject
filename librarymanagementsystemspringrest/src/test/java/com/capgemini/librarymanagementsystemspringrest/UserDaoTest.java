@@ -29,25 +29,25 @@ public class UserDaoTest {
 	
 	@Test
 	public void testBorrowBook() throws LibraryManagementSystemException {
-		UserRequestInformation status = dao.borrowBook(121212, 123123);
-		Assertions.assertNotNull(status);
+		boolean status = dao.borrowBook(121212, 123123);
+		Assertions.assertTrue(status);
 	}
 	
 	@Test
 	public void testBorrowBookFalse() throws LibraryManagementSystemException {
-		UserRequestInformation status = dao.borrowBook(121212, 123123);
-		Assertions.assertNull(status);
+		boolean status = dao.borrowBook(121212, 123123);
+		Assertions.assertFalse(status);
 	}
 	
 	@Test
 	public void testReturnBook() throws LibraryManagementSystemException {
-		UserRequestInformation status = dao.returnBook(121212, 123123);
-		Assertions.assertNotNull(status);
+		boolean status = dao.returnBook(121212, 123123);
+		Assertions.assertTrue(status);
 	}
 	
 	@Test
 	public void testReturnBookFalse() throws LibraryManagementSystemException {
-		UserRequestInformation status = dao.returnBook(121212, 123123);
-		Assertions.assertNull(status);
+		boolean status = dao.returnBook(121212, 123123);
+		Assertions.assertFalse(status);
 	}
 }

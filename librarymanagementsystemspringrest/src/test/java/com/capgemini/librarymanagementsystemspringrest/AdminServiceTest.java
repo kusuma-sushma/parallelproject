@@ -100,30 +100,28 @@ public class AdminServiceTest {
 	
 	@Test
 	public void testIssueBook() throws LibraryManagementSystemException {
-		boolean status = service.issueBook(121212, 123123);
+		boolean status = service.issueBook(1212);
 		Assertions.assertTrue(status);
 	}
 	
 	@Test
 	public void testIssueBookFalse() throws LibraryManagementSystemException {
-		boolean status = service.issueBook(121212, 123123);
+		boolean status = service.issueBook(1212);
 		Assertions.assertFalse(status);
 	}
 	
 	@Test
 	public void testUpdateBook() {
 		BooksInformation bookInfo = new BooksInformation();
-		bookInfo.setBookAuthor("sushma");
-		BooksInformation status = service.updateBook(1);
-		Assertions.assertNotNull(status);
+		boolean status = service.updateBook(bookInfo);
+		Assertions.assertTrue(status);
 	}
 	
 	@Test
 	public void testUpdateBookFalse() {
 		BooksInformation bookInfo = new BooksInformation();
-		bookInfo.setBookAuthor("sushma");
-		BooksInformation status = service.updateBook(10);
-		Assertions.assertNull(status);
+		boolean status = service.updateBook(bookInfo);
+		Assertions.assertFalse(status);
 	}
 	
 	@Test
@@ -176,13 +174,13 @@ public class AdminServiceTest {
 	
 	@Test
 	public void isReceived() throws LibraryManagementSystemException {
-		boolean status = service.isBookRecevied(121212, 123123);
+		boolean status = service.isBookRecevied(1212);
 		Assertions.assertTrue(status);
 	}
 	
 	@Test
 	public void isReceivedFalse() throws LibraryManagementSystemException {
-		boolean status = service.isBookRecevied(121212, 123123);
+		boolean status = service.isBookRecevied(1212);
 		Assertions.assertFalse(status);
 	}
 

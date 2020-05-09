@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Type;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
@@ -29,7 +31,8 @@ public class BooksInformation implements Serializable{
 	private String bookCategory;
 	@Column
 	private String bookPublisher;
-	@Column
+	@Column(columnDefinition = "TINYINT")
+	@Type(type="org.hibernate.type.NumericBooleanType")
 	private boolean bookAvaliable=true;
 	
 //	private Date issueDate;

@@ -22,12 +22,8 @@ public class BookAllotment {
 	private int bookAllotedId;
 	@Column(nullable=false)
 	private int bookId;
-	@Column
-	private String bookName;
 	@Column(nullable=false)
 	private int userId;
-	@Column
-	private String userName;
 	@Column
 	private Date issueDate;
 	@Column

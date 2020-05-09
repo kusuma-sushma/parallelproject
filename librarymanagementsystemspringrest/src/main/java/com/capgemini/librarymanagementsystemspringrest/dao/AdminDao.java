@@ -15,12 +15,12 @@ public interface AdminDao {
 	boolean addBook(BooksInformation bookInfo);
 	boolean removeBook(int bookId);
 	//boolean returnedBook(int bookId);
-	boolean issueBook(int userId, int bookId);
-	BooksInformation updateBook(int bookId);
+	boolean issueBook(int requestId);
+	boolean updateBook(BooksInformation bookInfo);
 	BooksInformation searchBook(int bookId);
 	List<BooksInformation> showAllBooks(); 
 	List<UserInformation> showAllUsers();
 	List<UserRequestInformation> showAllRequests();
-	boolean isBookRecevied(int userId, int bookId);
+	boolean isBookRecevied(int requestId);
 
 }

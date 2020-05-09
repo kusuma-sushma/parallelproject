@@ -13,12 +13,12 @@ public interface AdminService {
 	boolean addBook(BooksInformation info);
 	boolean removeBook(int bookId);	
 	//boolean returnedBook(int bookId);
-	boolean issueBook(int userId, int bookId);
-	BooksInformation updateBook(int bookId);
+	boolean issueBook(int requestId);
+	boolean updateBook(BooksInformation bookInfo);
 	BooksInformation searchBook(int bookId);
 	List<BooksInformation> showAllBooks();
 	List<UserRequestInformation> showAllRequests();
 	List<UserInformation> showAllUsers();
-	boolean isBookRecevied(int userId, int bookId);
+	boolean isBookRecevied(int requestId);
 
 }

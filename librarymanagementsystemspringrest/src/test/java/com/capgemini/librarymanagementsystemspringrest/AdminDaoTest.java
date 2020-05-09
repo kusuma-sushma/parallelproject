@@ -99,30 +99,28 @@ public class AdminDaoTest {
 	
 	@Test
 	public void testIssueBook() throws LibraryManagementSystemException {
-		boolean status = dao.issueBook(121212, 123123);
+		boolean status = dao.issueBook(12121);
 		Assertions.assertTrue(status);
 	}
 	
 	@Test
 	public void testIssueBookFalse() throws LibraryManagementSystemException {
-		boolean status = dao.issueBook(121212, 123123);
+		boolean status = dao.issueBook(121);
 		Assertions.assertFalse(status);
 	}
 	
 	@Test
 	public void testUpdateBook() {
 		BooksInformation bookInfo = new BooksInformation();
-		bookInfo.setBookAuthor("sushma");
-		BooksInformation status = dao.updateBook(1);
-		Assertions.assertNotNull(status);
+		boolean status = dao.updateBook(bookInfo);
+		Assertions.assertTrue(status);
 	}
 	
 	@Test
 	public void testUpdateBookFalse() {
 		BooksInformation bookInfo = new BooksInformation();
-		bookInfo.setBookAuthor("sushma");
-		BooksInformation status = dao.updateBook(10);
-		Assertions.assertNull(status);
+		boolean status = dao.updateBook(bookInfo);
+		Assertions.assertFalse(status);
 	}
 	
 	@Test
@@ -175,13 +173,13 @@ public class AdminDaoTest {
 	
 	@Test
 	public void isReceived() throws LibraryManagementSystemException {
-		boolean status = dao.isBookRecevied(121212, 123123);
+		boolean status = dao.isBookRecevied(1212);
 		Assertions.assertTrue(status);
 	}
 	
 	@Test
 	public void isReceivedFalse() throws LibraryManagementSystemException {
-		boolean status = dao.isBookRecevied(121212, 123123);
+		boolean status = dao.isBookRecevied(1212);
 		Assertions.assertFalse(status);
 	}
 	}

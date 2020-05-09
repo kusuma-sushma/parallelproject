@@ -37,13 +37,13 @@ public class AdminServiceImplementation implements AdminService{
 	}
 
 	@Override
-	public boolean issueBook(int userId, int bookId) {
-		return adminDao.issueBook(userId, bookId);
+	public boolean issueBook(int requestId) {
+		return adminDao.issueBook(requestId);
 	}
 
 	@Override
-	public BooksInformation updateBook(int bookId) {
-		return adminDao.updateBook(bookId);
+	public boolean updateBook(BooksInformation bookInfo) {
+		return adminDao.updateBook(bookInfo);
 	}
 
 	@Override
@@ -67,8 +67,8 @@ public class AdminServiceImplementation implements AdminService{
 	}
 
 	@Override
-	public boolean isBookRecevied(int userId, int bookId) {
-		return adminDao.isBookRecevied(userId, bookId);
+	public boolean isBookRecevied(int requestId) {
+		return adminDao.isBookRecevied(requestId);
 	}
 
 }

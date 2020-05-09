@@ -32,26 +32,26 @@ public class UserServiceTest {
 	
 	@Test
 	public void testBorrowBook() throws LibraryManagementSystemException {
-		UserRequestInformation status = service.borrowBook(121212, 123123);
-		Assertions.assertNotNull(status);
+		boolean status = service.borrowBook(121212, 123123);
+		Assertions.assertTrue(status);
 	}
 	
 	@Test
 	public void testBorrowBookFalse() throws LibraryManagementSystemException {
-		UserRequestInformation status = service.borrowBook(121212, 123123);
-		Assertions.assertNull(status);
+		boolean status = service.borrowBook(121212, 123123);
+		Assertions.assertFalse(status);
 	}
 	
 	@Test
 	public void testReturnBook() throws LibraryManagementSystemException {
-		UserRequestInformation status = service.returnBook(121212, 123123);
-		Assertions.assertNotNull(status);
+		boolean status = service.returnBook(121212, 123123);
+		Assertions.assertTrue(status);
 	}
 	
 	@Test
 	public void testReturnBookFalse() throws LibraryManagementSystemException {
-		UserRequestInformation status = service.returnBook(121212, 123123);
-		Assertions.assertNull(status);
+		boolean status = service.returnBook(121212, 123123);
+		Assertions.assertFalse(status);
 	}
 
 	
