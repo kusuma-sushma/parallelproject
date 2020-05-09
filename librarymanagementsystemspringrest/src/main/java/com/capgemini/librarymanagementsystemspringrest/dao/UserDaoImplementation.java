@@ -11,6 +11,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 
@@ -25,15 +26,16 @@ public class UserDaoImplementation implements UserDao {
 	private EntityManagerFactory factory;
 
 	public UserInformation userLogin(String email, String password) {
-		EntityManagerFactory factory =null;
+//		EntityManagerFactory factory =null;
 		EntityManager manager = null;
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
+//		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
+//			Properties properties = new Properties();
+//			properties.load(fileInputStream);
+		try {
 		factory = Persistence.createEntityManagerFactory("hibernatedb");
 		manager = factory.createEntityManager();
-		String jpql = properties.getProperty("login2");
-		Query query = manager.createQuery(jpql);
+		String jpql = "select a from UsersInformation a where a.emailId = :emailId and a.password =:password" ;
+		TypedQuery<UserInformation>  query = manager.createQuery(jpql, UserInformation.class);
 		query.setParameter("memail",email);
 		query.setParameter("mpassword", password);
 		UserInformation info = (UserInformation) query.getSingleResult();
@@ -49,7 +51,7 @@ public class UserDaoImplementation implements UserDao {
 	}
 
 	public UserRequestInformation borrowBook(int userId, int bookId) {
-		EntityManagerFactory factory =null;
+//		EntityManagerFactory factory =null;
 		EntityManager manager = null;
 		EntityTransaction transaction = null;
 		UserRequestInformation userRequest=new UserRequestInformation();
@@ -72,19 +74,20 @@ public class UserDaoImplementation implements UserDao {
 	}
 
 	public UserRequestInformation returnBook(int userId, int bookId) {
-		EntityManagerFactory factory = null;
+//		EntityManagerFactory factory = null;
 		EntityManager manager = null;
 		EntityTransaction transaction = null;
 		UserRequestInformation user = new UserRequestInformation();
 		List<BooksInformation> book = new LinkedList<BooksInformation>();
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
+//		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
+//			Properties properties = new Properties();
+//			properties.load(fileInputStream);
+		try {
 			factory = Persistence.createEntityManagerFactory("hibernatedb");
 			manager = factory.createEntityManager();
 			transaction = manager.getTransaction();
 			transaction.begin();
-			String jpql = properties.getProperty("updatebook1");
+			String jpql = "update UserRequestInformation m set m.status=:mstatus where m.bookId = :mbookId";
 			Query query = manager.createQuery(jpql);
 			query.setParameter("mstatus", "returned");
 			query.setParameter("mbookId", bookId);

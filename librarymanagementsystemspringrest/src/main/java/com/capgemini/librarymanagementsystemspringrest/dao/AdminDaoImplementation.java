@@ -21,18 +21,19 @@ import com.capgemini.librarymanagementsystemspringrest.dto.UserRequestInformatio
 @Repository
 public class AdminDaoImplementation implements AdminDao {
 	@PersistenceUnit
-	private static EntityManagerFactory factory;
+	private EntityManagerFactory factory;
 
 	
 	public UserInformation adminLogin(String email, String password) {
 	//	EntityManagerFactory factory =null;
 		EntityManager manager = null;
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
+//		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
+//			Properties properties = new Properties();
+//			properties.load(fileInputStream);
 		//factory = Persistence.createEntityManagerFactory("hibernatedb");
+		try {
 		manager = factory.createEntityManager();
-		String jpql = properties.getProperty("login1");
+		String jpql ="select a from UsersInformation a where a.emailId = :emailId and a.password =:password" ;
 	//	String jpql="select m from UserInformation m where m.email = :memail and m.password =:mpassword";
 		TypedQuery<UserInformation>  query = manager.createQuery(jpql, UserInformation.class);
 		query.setParameter("memail",email);
@@ -101,10 +102,11 @@ public class AdminDaoImplementation implements AdminDao {
 		//EntityManagerFactory factory = null;
 		EntityManager manager = null;
 		EntityTransaction transaction = null;
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
+//		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
+//			Properties properties = new Properties();
+//			properties.load(fileInputStream);
 		//	factory = Persistence.createEntityManagerFactory("hibernatedb");
+		try {
 			manager = factory.createEntityManager();
 			transaction = manager.getTransaction();
 			transaction.begin();
@@ -133,10 +135,11 @@ public class AdminDaoImplementation implements AdminDao {
 		EntityManager manager = null;
 		EntityTransaction transaction = null;
 		UserRequestInformation user = new UserRequestInformation();
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
+//		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
+//			Properties properties = new Properties();
+//			properties.load(fileInputStream);
 			//factory = Persistence.createEntityManagerFactory("hibernatedb");
+		try {
 			manager = factory.createEntityManager();
 			transaction = manager.getTransaction();
 			transaction.begin();	
@@ -147,14 +150,14 @@ public class AdminDaoImplementation implements AdminDao {
 			Query query = manager.createQuery(jpql);
 			query.setParameter("mstatus", user.getStatus());
 			query.setParameter("mbookId", bookId);
-			boolean update=AdminDaoImplementation.updateBook1(bookId);
-			if (update!=false) {
-			boolean delete =AdminDaoImplementation.deleteBook1(bookId);
-			if (delete!=false) {
+//			boolean update=AdminDaoImplementation.updateBook1(bookId);
+//			if (update!=false) {
+//			boolean delete =AdminDaoImplementation.deleteBook1(bookId);
+//			if (delete!=false) {
 				 query.executeUpdate();
 				transaction.commit();
-			}
-			}
+//			}
+//			}
 		} catch (Exception e) {
 			e.getMessage();
 			transaction.rollback();
@@ -169,12 +172,13 @@ public class AdminDaoImplementation implements AdminDao {
 	public BooksInformation searchBook(int bookId) {
 		//EntityManagerFactory factory =null;
 		EntityManager manager = null;
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
+//		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
+//			Properties properties = new Properties();
+//			properties.load(fileInputStream);
 		//factory = Persistence.createEntityManagerFactory("hibernatedb");
+		try {
 		manager = factory.createEntityManager();
-		String jpql = properties.getProperty("searchbook");
+//		String jpql = properties.getProperty("searchbook");
 		BooksInformation info =manager.find(BooksInformation.class, bookId);
 
 //		Query query = manager.createQuery(jpql);
@@ -193,12 +197,13 @@ public class AdminDaoImplementation implements AdminDao {
 	public List<BooksInformation> showAllBooks() {
 	//	EntityManagerFactory factory =null;
 		EntityManager manager = null;
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
+//		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
+//			Properties properties = new Properties();
+//			properties.load(fileInputStream);
 	//	factory = Persistence.createEntityManagerFactory("hibernatedb");
+		try {
 		manager = factory.createEntityManager();
-		String jpql = properties.getProperty("showallbooks");
+		String jpql = "select b from BooksInformation b";
 		TypedQuery<BooksInformation> query = manager.createQuery(jpql, BooksInformation.class);
 		List<BooksInformation> recordlist = query.getResultList();
 		return recordlist;
@@ -214,12 +219,13 @@ public class AdminDaoImplementation implements AdminDao {
 	public List<UserInformation> showAllUsers() {
 	//	EntityManagerFactory factory =null;
 		EntityManager manager = null;
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
+//		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
+//			Properties properties = new Properties();
+//			properties.load(fileInputStream);
 	//	factory = Persistence.createEntityManagerFactory("hibernatedb");
+		try {
 		manager = factory.createEntityManager();
-		String jpql = properties.getProperty("showallusers");
+		String jpql = "select b from UserInformation b";
 		TypedQuery<UserInformation> query = manager.createQuery(jpql, UserInformation.class);
 		List<UserInformation> userList = query.getResultList();
 		return userList;
@@ -235,12 +241,13 @@ public class AdminDaoImplementation implements AdminDao {
 	public List<UserRequestInformation> showAllRequests() {
 		//EntityManagerFactory factory =null;
 		EntityManager manager = null;
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
+//		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
+//			Properties properties = new Properties();
+//			properties.load(fileInputStream);
 	//	factory = Persistence.createEntityManagerFactory("hibernatedb");
+		try {
 		manager = factory.createEntityManager();
-		String jpql = properties.getProperty("showallrequest");
+		String jpql = "select b from UserRequestInformation b";
 		TypedQuery<UserRequestInformation> query = manager.createQuery(jpql, UserRequestInformation.class);
 		List<UserRequestInformation> requestlist = query.getResultList();
 		return requestlist;
@@ -261,14 +268,15 @@ public class AdminDaoImplementation implements AdminDao {
 		EntityTransaction transaction = null;
 		UserRequestInformation user = new UserRequestInformation();
 		List<BooksInformation> book = new LinkedList<BooksInformation>();
-		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-			Properties properties = new Properties();
-			properties.load(fileInputStream);
+//		try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
+//			Properties properties = new Properties();
+//			properties.load(fileInputStream);
 		//	factory = Persistence.createEntityManagerFactory("hibernatedb");
+		try {
 			manager = factory.createEntityManager();
 			transaction = manager.getTransaction();
 			transaction.begin();
-			String jpql =properties.getProperty("collectbookfromuser");
+			String jpql ="update UserRequestInformation u set u.returndDate=:ureturnDate where m.bookId=:mbookId";
 			Query query = manager.createQuery(jpql);
 //			query.setParameter("mstatus", "returned");
 //			query.setParameter("mbookId", bookInfo.getBookId());
@@ -300,7 +308,7 @@ public class AdminDaoImplementation implements AdminDao {
 			manager = factory.createEntityManager();
 			transaction = manager.getTransaction();
 			transaction.begin();
-			String jpql = properties.getProperty("updatebook");
+			String jpql = "update BooksInformation b set  BookBean b";
 			// BooksInformation record = manager.find(BooksInformation.class, bookId);
 			//TypedQuery<BooksInformation>  query = manager.createQuery(jpql, BooksInformation.class);
 			Query query = manager.createQuery(jpql);
@@ -326,59 +334,59 @@ public class AdminDaoImplementation implements AdminDao {
 		return null;
 	}
 
-public static boolean updateBook1(int bookId) {
-//	EntityManagerFactory factory = null;
-	EntityManager manager = null;
-	EntityTransaction transaction = null;
-	UserRequestInformation userRequest=new UserRequestInformation();
-	try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-		Properties properties = new Properties();
-		properties.load(fileInputStream);
-	//	factory = Persistence.createEntityManagerFactory("hibernatedb");
-		manager = factory.createEntityManager();
-		transaction = manager.getTransaction();
-		transaction.begin();
-		String jpql = properties.getProperty("updatebook1");
-		Query query = manager.createQuery(jpql);
-		query.setParameter("mstatus", "approved");
-		query.setParameter("mbookId", bookId);
-		int result = query.executeUpdate();
-		transaction.commit();
-	} catch (Exception e) {
-		e.getMessage();
-		transaction.rollback();
-	} finally {
-	manager.close();
-//	factory.close();
-}
-	return false;
-}
-
-public static boolean deleteBook1(int bookId) {
-	//EntityManagerFactory factory = null;
-	EntityManager manager = null;
-	EntityTransaction transaction = null;
-	try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
-		Properties properties = new Properties();
-		properties.load(fileInputStream);
-	//	factory = Persistence.createEntityManagerFactory("hibernatedb");
-		manager = factory.createEntityManager();
-		transaction = manager.getTransaction();
-		transaction.begin();
-		String jpql = properties.getProperty("removebook");
-		Query query = manager.createQuery(jpql);
-		query.setParameter("mbookId", bookId);
-		int result = query.executeUpdate();
-		transaction.commit();
-		return true;
-	} catch (Exception e) {
-		e.printStackTrace();
-		transaction.rollback();
-	} finally {
-	manager.close();
-//	factory.close();
-	}
-	return false;
-}
+//public static boolean updateBook1(int bookId) {
+////	EntityManagerFactory factory = null;
+//	EntityManager manager = null;
+//	EntityTransaction transaction = null;
+//	UserRequestInformation userRequest=new UserRequestInformation();
+//	try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
+//		Properties properties = new Properties();
+//		properties.load(fileInputStream);
+//	//	factory = Persistence.createEntityManagerFactory("hibernatedb");
+//		manager = factory.createEntityManager();
+//		transaction = manager.getTransaction();
+//		transaction.begin();
+//		String jpql = properties.getProperty("updatebook1");
+//		Query query = manager.createQuery(jpql);
+//		query.setParameter("mstatus", "approved");
+//		query.setParameter("mbookId", bookId);
+//		int result = query.executeUpdate();
+//		transaction.commit();
+//	} catch (Exception e) {
+//		e.getMessage();
+//		transaction.rollback();
+//	} finally {
+//	manager.close();
+////	factory.close();
+//}
+//	return false;
+//}
+//
+//public static boolean deleteBook1(int bookId) {
+//	//EntityManagerFactory factory = null;
+//	EntityManager manager = null;
+//	EntityTransaction transaction = null;
+//	try (FileInputStream fileInputStream = new FileInputStream("databaseproperties.properties")) {
+//		Properties properties = new Properties();
+//		properties.load(fileInputStream);
+//	//	factory = Persistence.createEntityManagerFactory("hibernatedb");
+//		manager = factory.createEntityManager();
+//		transaction = manager.getTransaction();
+//		transaction.begin();
+//		String jpql = properties.getProperty("removebook");
+//		Query query = manager.createQuery(jpql);
+//		query.setParameter("mbookId", bookId);
+//		int result = query.executeUpdate();
+//		transaction.commit();
+//		return true;
+//	} catch (Exception e) {
+//		e.printStackTrace();
+//		transaction.rollback();
+//	} finally {
+//	manager.close();
+////	factory.close();
+//	}
+//	return false;
+//}
 
 }

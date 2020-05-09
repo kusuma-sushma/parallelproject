@@ -2,16 +2,19 @@ package com.capgemini.librarymanagementsystemspringrest.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.capgemini.librarymanagementsystemspringrest.dao.AdminDao;
 import com.capgemini.librarymanagementsystemspringrest.dto.BooksInformation;
 import com.capgemini.librarymanagementsystemspringrest.dto.UserInformation;
 import com.capgemini.librarymanagementsystemspringrest.dto.UserRequestInformation;
 import com.capgemini.librarymanagementsystemspringrest.factory.LibraryManagementSystemFactory;
 
-
+@Service
 public class AdminServiceImplementation implements AdminService{
-	
-	private AdminDao adminDao=LibraryManagementSystemFactory.getAdminDao();
+	@Autowired
+	private AdminDao adminDao;
 
 	@Override
 	public boolean addUser(UserInformation userInfo) {

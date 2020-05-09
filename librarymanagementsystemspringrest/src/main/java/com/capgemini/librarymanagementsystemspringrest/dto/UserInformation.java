@@ -1,18 +1,19 @@
 package com.capgemini.librarymanagementsystemspringrest.dto;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Data;
-//@SuppressWarnings("serial")
+@SuppressWarnings("serial")
 @Data
 @Entity
 @Table(name="lms_spring_allusers")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserInformation {
 	@Id
 	@Column
@@ -30,9 +31,9 @@ public class UserInformation {
 	@Column
 	private String role;
 	@Column	
-	private int noOfBooksBorrowed;
+	private int noOfBooksBorrowed=0;
 	@Column
-	private double fine;
+	private double fine=0;
 	
 	//public int getNoOfBooks() {
 		//return noOfBooks;

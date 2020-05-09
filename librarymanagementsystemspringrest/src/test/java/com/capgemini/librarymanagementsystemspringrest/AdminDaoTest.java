@@ -1,16 +1,12 @@
 package com.capgemini.librarymanagementsystemspringrest;
 
 import java.util.List;
-//import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.capgemini.librarymanagementsystemspringrest.dao.AdminDao;
-import com.capgemini.librarymanagementsystemspringrest.dao.AdminDaoImplementation;
 import com.capgemini.librarymanagementsystemspringrest.dto.BooksInformation;
 import com.capgemini.librarymanagementsystemspringrest.dto.UserInformation;
 import com.capgemini.librarymanagementsystemspringrest.dto.UserRequestInformation;

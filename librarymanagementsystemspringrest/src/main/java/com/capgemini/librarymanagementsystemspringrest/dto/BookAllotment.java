@@ -8,11 +8,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Data;
 @Data
 @Entity
 @Table(name="lms_spring_bookallotment")
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookAllotment {
 	@Id
 	@Column

@@ -1,15 +1,16 @@
 package com.capgemini.librarymanagementsystemspringrest.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.capgemini.librarymanagementsystemspringrest.dao.UserDao;
-import com.capgemini.librarymanagementsystemspringrest.dto.BooksInformation;
 import com.capgemini.librarymanagementsystemspringrest.dto.UserInformation;
 import com.capgemini.librarymanagementsystemspringrest.dto.UserRequestInformation;
-import com.capgemini.librarymanagementsystemspringrest.factory.LibraryManagementSystemFactory;
 
-
+@Service
 public class UserServiceImplementation implements UserService{
-
-	private UserDao userDao=LibraryManagementSystemFactory.getUserDao();
+	@Autowired
+	private UserDao userDao;
 
 	@Override
 	public UserInformation userLogin(String email, String password) {
