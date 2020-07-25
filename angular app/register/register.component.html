@@ -1,0 +1,78 @@
+<div class="image">
+  <div class="add-user">
+    <br>
+    <br>
+    <div class="col-md-4 offset-4 mt-4">
+      <div class="card text-dark bg-light mb-3">
+        <form #addUserForm='ngForm' (ngSubmit)='registerUser(addUserForm)'>
+          <div class="card">
+            <div class="alert alert-danger" *ngIf='error'>{{error}}</div>
+            <div class="alert alert-success" *ngIf='message'>{{message}}</div>
+            <div class="card-header">
+              <h2 class="card-title">ADD USER</h2>
+            </div>
+            <div class="card-body">
+
+              <div class="form-group">
+                <label for="username">User Name</label>
+                <input type="text" name="username" id="username" #username='ngModel' ngModel class="form-control"
+                  required pattern="^[a-zA-Z ]{3,30}$">
+                <div *ngIf='username.touched && username.invalid'>
+                  <div class="validation" *ngIf='username.errors.required'>
+                    Please fill this Out!
+                  </div>
+                  <div class="validation" *ngIf='username.errors.pattern'>Name Should contain Only Alphabets minimum 3
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" name="email" id="email" #email='ngModel' ngModel class="form-control" required email
+                  minlength="10" pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}">
+                <div *ngIf='email.touched && email.invalid'>
+                  <div class="validation" *ngIf='email.errors.required'>
+                    *Email is required
+                  </div>
+                  <div class="validation" *ngIf='email.errors.pattern'>
+                    You have entered an invalid email address. Please try again.
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" #password='ngModel' ngModel class="form-control"
+                  required minlength="6" pattern="^[A-Za-z\d$@$!%*#?&]{6,12}">
+                <div *ngIf='password.touched && password.invalid'>
+                  <div class="validation" *ngIf='password.errors.required'>
+                    *Password is required </div>
+                  <div class="validation" *ngIf='password.errors.pattern'>
+                    Password must contain between 6 and 12 characters
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="department">Department</label>
+                <input type="text" name="department" id="department" #department='ngModel' ngModel class="form-control"
+                  required pattern="^[a-zA-Z ]{0,30}$">
+                <div *ngIf='department.touched && department.invalid'>
+                  <div class="validation" *ngIf='department.errors.required'>
+                    Please fill this Out!
+                  </div>
+                  <div class="validation" *ngIf='department.errors.pattern'>
+                    Department Should contain Only Alphabets
+                  </div>
+                </div>
+              </div>
+
+
+              <button type="submit" class="btn btn-primary float-right" class="registerbtn"
+                [disabled]=addUserForm.invalid>Add User</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,49 @@
+ .registerbtn {
+    background-color:rgb(241, 44, 87);
+    color:white;
+    padding: 16px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.9;
+  }
+  .update-book {
+    padding: 25px,50px,75px,100px;
+  padding-top: 20px;
+  }
+  .validation{
+    color:white;
+  }
+  
+  .card-title {
+    font-size:48px;
+    font-weight: bold;
+  
+    color:  rgb(139, 6, 6);
+  }
+  
+  .card-header {
+  background-color:transparent;
+  text-align: center;
+  color: #d4145a;
+  }
+  
+  
+  .card{
+    width:110%;
+  background-color: orange;
+  font-size: 20px;
+  color: #d4145a;
+    margin-top: -50px;
+    margin-left: -50px;
+      border: none;
+       background-position: center;
+       margin: 0 auto; /* Added */
+       float: none; /* Added */
+  
+  
+  
+  }
+  
+  

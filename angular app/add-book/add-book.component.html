@@ -1,0 +1,77 @@
+<div class="image">
+  <div class="add-book">
+    <br>
+    <div class="col-md-4 offset-4 mt-4">
+      <div class="card text-dark bg-light mb-3">
+        <form #addBookForm='ngForm' (ngSubmit)='postaddBook(addBookForm)'>
+          <div class="card">
+            <div class="alert alert-danger" *ngIf='error'>{{error}}</div>
+            <div class="alert alert-success" *ngIf='message'>{{message}}</div>
+            <div class="card-header">
+              <h2 class="card-title">ADD BOOK</h2>
+            </div>
+            <div class="card-body">
+
+              <div class="form-group">
+                <label for="bookName">Book Name</label>
+                <input type="bookName" name="bookName" id="bookName" #bookName='ngModel' ngModel class="form-control"
+                  required pattern="^[a-zA-Z ]{3,}$">
+                <div *ngIf='bookName.touched && bookName.invalid'>
+                  <div class="validation" *ngIf='bookName.errors.required'>
+                    *Please fill this out!!
+                  </div>
+                  <div class="validation" *ngIf='bookName.errors.pattern'>
+                    Book Name Should contain Only Alphabets minimum 3
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="bookAuthor">Book Authour</label>
+                <input type="text" name="bookAuthor" id="bookAuthor" #bookAuthor='ngModel' ngModel class="form-control"
+                  required pattern="^[a-zA-Z ]{3,}$">
+                <div *ngIf='bookAuthor.touched && bookAuthor.invalid'>
+                  <div class="validation" *ngIf='bookAuthor.errors.required'>
+                    *Please fill this out!!
+                  </div>
+                  <div class="validation" *ngIf='bookAuthor.errors.pattern'>Author Should contain Only Alphabets minimum
+                    3
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="bookCategory">Category</label>
+                <input type="text" name="bookCategory" id="bookCategory" #bookCategory='ngModel' ngModel
+                  class="form-control" required pattern="^[a-zA-Z ]{3,}$">
+                <div *ngIf='bookCategory.touched && bookCategory.invalid'>
+                  <div class="validation" *ngIf='bookCategory.errors.required'>
+                    * Please fill this out!!
+                  </div>
+                  <div class="validation" *ngIf='bookCategory.errors.pattern'>Category Should contain Only Alphabets
+                    minimum 3
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="bookPublisher">Publisher</label>
+                <input type="text" name="bookPublisher" id="bookPublisher" #bookPublisher='ngModel' ngModel
+                  class="form-control" required pattern="^[a-zA-Z ]{3,}$">
+                <div *ngIf='bookPublisher.touched && bookPublisher.invalid'>
+                  <div class="validation" *ngIf='bookPublisher.errors.required'>
+                    * Please fill this out!!
+                  </div>
+                  <div class="validation" *ngIf='bookPublisher.errors.pattern'>Publisher Should contain Only Alphabets
+                    minimum 3
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary float-right" class="registerbtn"
+                [disabled]=addBookForm.invalid>Add Book</button>
+
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,22 @@
+p{
+    font-size: medium;
+}
+
+.card-title {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background-color: orange;
+    color: #d4145a;
+}
+.about{
+   
+    padding-top: 50px;
+    text-align: center;
+    border: none;
+    max-width: 750px;
+    height: 65px;
+    align-items: center;
+    background-position: center;
+     margin: 0 auto; 
+
+}

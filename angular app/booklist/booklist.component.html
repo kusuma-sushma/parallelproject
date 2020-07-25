@@ -1,0 +1,61 @@
+<div class="image">
+    <div class="container mt-4"> 
+        <div class="show-books">
+        <div class="alert alert-danger" *ngIf='error'>{{error}}</div>
+<div class="alert alert-success" *ngIf='message'>{{message}}</div>
+
+        <div class="input-group md-form form-sm form-2 pl-0">
+            <input class="form-control my-0 py-1 red-border" type="text" placeholder="Search" [(ngModel)]="searchText"
+                aria-label="Search">
+            <div class="input-group-append">
+                <span class="input-group-text red lighten-3" id="basic-text1"></span>
+          
+            </div>
+        </div>
+        <select class="selectpicker widith ='50%' float-right" id="search" [(ngModel)]="fieldName">
+        <option value="bookId">BookId</option>
+        <option value="bookName" selected>BookName</option>
+        <option value="bookCategory">Category</option>
+        <option value="bookAuthor">Author</option>
+        <option value="bookPublisher">Publisher</option>
+    </select>
+    <br>
+    <br>
+    <table class="table table-hover table-bordered">
+              <thead class="books">
+            <tr>
+                <th>Book Id</th>
+                <th>Book Name</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Publisher</th>
+                <th>Is Book Available</th>
+                <th *ngIf="isAdminLogin">UPDATE </th>
+                <th *ngIf="isAdminLogin">DELETE</th>
+                <th *ngIf="isUserLogin">REQUEST</th>
+                <th *ngIf="isUserLogin">RETURN</th>
+            </tr>
+        </thead>
+        <tbody class="books-body">
+                <tr *ngFor='let book of books|searchBook:searchText:fieldName'>
+                <td>{{book.bookId}}</td>
+                <td>{{book.bookName}}</td>
+                <td>{{book.bookAuthor}}</td>
+                <td>{{book.bookCategory}}</td>
+                <td>{{book.bookPublisher}}</td>
+                <td>{{book.bookAvailable}}</td>
+                <td *ngIf="isAdminLogin"><button class="btn registerbtn "  id="update" (click)='updateBook(book)'>Update</button></td>
+                <td *ngIf="isAdminLogin"><button class="btn registerbtn" id="delete"
+                        (click)='deleteBook(book)'>Delete</button></td>
+                <td *ngIf="isUserLogin"><button class="btn registerbtn" id ="request" (click)='postReq(book)'>Request</button></td>
+                <td *ngIf="isUserLogin"><button class="btn registerbtn" id ="return" (click)='postReturnBook(book)'>Return</button></td>
+            
+
+            </tr>
+
+        </tbody>
+    </table>
+</div>
+
+</div>
+
